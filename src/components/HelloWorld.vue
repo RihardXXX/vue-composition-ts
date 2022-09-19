@@ -34,7 +34,9 @@ const count = ref(0);
 </template>
 
 <style>
-.read {
-    color: #888;
-}
+    .read {
+        position: relative;
+        z-index: 112;
+        color: #888;
+    }
 </style>
