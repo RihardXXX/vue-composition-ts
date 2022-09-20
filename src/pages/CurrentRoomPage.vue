@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    name: 'AboutPage',
+    name: 'CurrentRoomPage',
 });
 
 // This starter template is using Vue 3 <script setup> SFCs
@@ -11,5 +11,5 @@ export default defineComponent({
 </script>
 
 <template>
-    <h1>About</h1>
+    <h1>CurrentRoomPage {{ $route.params }}</h1>
 </template>

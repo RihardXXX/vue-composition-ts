@@ -1,8 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import StartLoadingPage from './components/StartLoadingPage.vue';
 
 export default defineComponent({
     name: 'App',
+    components: {
+        StartLoadingPage,
+    },
 });
 
 // This starter template is using Vue 3 <script setup> SFCs
@@ -11,15 +15,24 @@ export default defineComponent({
 </script>
 
 <template>
-    <h1>Hello App!</h1>
-    <p>
-        <!-- use the router-link component for navigation. -->
-        <!-- specify the link by passing the `to` prop. -->
-        <!-- `<router-link>` will render an `<a>` tag with the correct `href` attribute -->
-        <router-link to="/">Go to Home</router-link>
-        <router-link to="/about">Go to About</router-link>
-    </p>
-    <!-- route outlet -->
-    <!-- component matched by the route will render here -->
+    <ul class="test">
+        <li>
+            <router-link to="/welcome">Go to Home</router-link>
+        </li>
+        <li>
+            <router-link to="/room-list">Go to About</router-link>
+        </li>
+        <li>
+            <router-link to="/current-room/777">Go to Home</router-link>
+        </li>
+    </ul>
+    <StartLoadingPage />
+
     <router-view></router-view>
 </template>
+
+<style lang="scss">
+    .test {
+        padding: 4rem;
+    }
+</style>
