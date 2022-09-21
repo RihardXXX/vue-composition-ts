@@ -1,38 +1,42 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import StartLoadingPage from './components/StartLoadingPage.vue';
 
-export default defineComponent({
-    name: 'App',
-    components: {
-        StartLoadingPage,
-    },
-});
+const router = useRouter();
 
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-// import HelloWorld from './components/HelloWorld.vue';
+// переменные шага и статуса авторизации
+const step = ref<number>(1);
+const isLoggedIn = ref<boolean>(false);
+
+// смена роута в зависимости от статуса
+const changeRoute = (status: boolean): void => {
+    if (status) {
+        router.push({ name: 'room-list' });
+    } else {
+        router.push({ name: 'welcome' });
+    }
+};
+
+// слежка за статусом авторизации
+watch(isLoggedIn, changeRoute);
+
+onMounted(() => {
+    // запускаем страницу загрузки 2 секунды
+    new Promise((resolve): void => {
+        setTimeout(() => {
+            step.value = 2;
+            resolve('');
+        }, 2000);
+    }) // а потом производим рироут в зависимости от статуса авторизации
+        .then((): void => changeRoute(isLoggedIn.value));
+});
 </script>
 
 <template>
-    <ul class="test">
-        <li>
-            <router-link to="/welcome">Go to Home</router-link>
-        </li>
-        <li>
-            <router-link to="/room-list">Go to About</router-link>
-        </li>
-        <li>
-            <router-link to="/current-room/777">Go to Home</router-link>
-        </li>
-    </ul>
-    <StartLoadingPage />
-
-    <router-view></router-view>
+    <StartLoadingPage v-if="step === 1" />
+    <div v-else>
+        <router-view></router-view>
+        <div v-show="isLoggedIn">header</div>
+    </div>
 </template>
-
-<style lang="scss">
-    .test {
-        padding: 4rem;
-    }
-</style>
