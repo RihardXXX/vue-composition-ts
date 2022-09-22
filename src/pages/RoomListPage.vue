@@ -1,13 +1,10 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { useRoomsStore } from '../store/rooms'
 
-export default defineComponent({
-    name: 'RoomListPage',
-});
+const rooms = useRoomsStore();
 
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-// import HelloWorld from './components/HelloWorld.vue';
+console.log(rooms)
+
 </script>
 
 <template>
