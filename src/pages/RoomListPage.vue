@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { useRoomsStore } from '../store/rooms'
+import { useRoomsStore } from '../store/rooms';
 
 const rooms = useRoomsStore();
 
-console.log(rooms)
-
+console.log(rooms);
 </script>
 
 <template>

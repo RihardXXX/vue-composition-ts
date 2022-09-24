@@ -15,10 +15,12 @@
         "all:fix": "npm run format && npm run style:fix"
     },
     "dependencies": {
+        "axios": "^0.27.2",
         "normalize.css": "^8.0.1",
         "pinia": "^2.0.22",
         "postcss": "^8.1.0",
         "vue": "^3.2.37",
+        "vue-axios": "^3.4.1",
         "vue-router": "^4.1.5"
     },
     "devDependencies": {

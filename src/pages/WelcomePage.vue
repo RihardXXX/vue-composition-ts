@@ -1,5 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+// import { inject } from 'vue';
+
+// const axios: any = inject('axios');
+
+// console.log('axios: ', axios);
+
+// axios.get('http://dog-api.kinduff.com/api/facts?number=5').then((res: any) => console.log(res))
 
 export default defineComponent({
     name: 'WelcomePage',
