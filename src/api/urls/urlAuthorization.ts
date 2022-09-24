@@ -1,5 +1,4 @@
-
-export const urlAuthorization = ():object => ({
+export const urlAuthorization = (): object => ({
     registration: '/authorization/registration',
     login: '/authorization/logIn',
     logout: '/authorization/logOut',
