@@ -1,5 +1,20 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import SvgIcon from '../components/ui/SvgIcon.vue';
+import RegistrationForm from '../components/RegistrationForm.vue';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Autoplay } from 'swiper';
+import 'swiper/css';
+import 'swiper/scss/autoplay';
+import slide1 from '../assets/images/slide1.jpeg';
+import slide2 from '../assets/images/slide2.jpeg';
+import slide3 from '../assets/images/slide3.jpeg';
+
+const onSwiper = (swiper: object): void =>
+    console.log('initial swiper: ', swiper);
+
+// подключение модуля автовоспроизведения
+const modules = [Autoplay];
 
 // ===
 // import { inject } from 'vue';
@@ -32,37 +47,33 @@ const startLogin = () => (step.value = 3);
 
 <template>
     <div :class="$style.IndexPage">
-        <!--        <div :class="$style.swiper">-->
-        <!--            <div ref="slider" class="swiper">-->
-        <!--                <div class="swiper-wrapper">-->
-        <!--                    <div-->
-        <!--                        v-for="slide in slides"-->
-        <!--                        :key="slide.id"-->
-        <!--                        :class="$style.slide"-->
-        <!--                        class="swiper-slide"-->
-        <!--                    >-->
-        <!--                        <div ref="image" :class="$style.image">-->
-        <!--                            <img :src="slide.src" :class="$style.img" />-->
-        <!--                        </div>-->
-        <!--                    </div>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
+        <swiper
+            :modules="modules"
+            :autoplay="{ delay: '4000' }"
+            :speed="2000"
+            :class="$style.swiper"
+            @swiper="onSwiper"
+        >
+            <swiper-slide :class="$style.image">
+                <img :src="slide1" :class="$style.img" />
+            </swiper-slide>
+            <swiper-slide :class="$style.image">
+                <img :src="slide2" :class="$style.img" />
+            </swiper-slide>
+            <swiper-slide :class="$style.image">
+                <img :src="slide3" :class="$style.img" />
+            </swiper-slide>
+        </swiper>
+
         <div :class="$style.registerSection">
-            <div
-                :class="[
-                    $style.headerRegister,
-                    {
-                        [$style.headerRegister_active]: step !== 1,
-                    },
-                ]"
-            >
-                <svg-icon
+            <div :class="$style.headerRegister">
+                <SvgIcon
                     v-if="step !== 1"
-                    name="left-arrow"
+                    name="leftArrow"
+                    color="white"
                     :class="$style.iconBack"
                     @click="step = 1"
-                />
+                ></SvgIcon>
                 <h2 :class="$style.titleRegister">
                     {{ titleForm }}
                 </h2>
@@ -142,6 +153,7 @@ const startLogin = () => (step.value = 3);
 
 .img {
     height: 100%;
+    width: 100%;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -231,5 +243,6 @@ const startLogin = () => (step.value = 3);
     margin-right: 5rem;
     cursor: pointer;
     fill: $white;
+    //transform: rotate(-359deg);
 }
 </style>

@@ -1,10 +1,10 @@
 import { createApp } from 'vue';
 import './reset.scss';
 import './default.scss';
+import 'virtual:svg-icons-register';
 import App from './App.vue';
 import router from './router/index';
 import { createPinia } from 'pinia';
-// import axios from 'axios';
 import VueAxios from 'vue-axios';
 import axiosApp from './api/axios/axios';
 
@@ -22,8 +22,6 @@ app.use(pinia);
 // app.use(VueAxios, axios);
 app.use(VueAxios, axiosApp);
 // провайдим axios через всё приложение
-// app.provide('axios', app.config.globalProperties.axios);
-// console.log('test: ', app.config.globalProperties.axios);
 app.provide('axios', app.config.globalProperties.axios);
 // console.log(app.provide);
 // монтируем приложение в див

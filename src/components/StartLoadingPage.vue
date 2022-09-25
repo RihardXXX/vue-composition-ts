@@ -48,27 +48,26 @@ onMounted(() => {
     width: 21rem;
     height: 21rem;
     //transform: translateY(-100%);
-}
-
-svg {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-
-    circle {
+    svg {
+        position: relative;
         width: 100%;
         height: 100%;
-        fill: none;
-        stroke: #f0f0f0;
-        stroke-width: 10;
-        stroke-linecap: round;
-        transition: all 0.5s;
+        transform: rotate(-90deg);
 
-        &:last-of-type {
-            stroke-dasharray: 625px;
-            stroke-dashoffset: calc(625px - (625px * var(--percent)) / 100);
-            stroke: #3498db;
+        circle {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: #f0f0f0;
+            stroke-width: 10;
+            stroke-linecap: round;
+            transition: all 0.5s;
+
+            &:last-of-type {
+                stroke-dasharray: 625px;
+                stroke-dashoffset: calc(625px - (625px * var(--percent)) / 100);
+                stroke: #3498db;
+            }
         }
     }
 }
