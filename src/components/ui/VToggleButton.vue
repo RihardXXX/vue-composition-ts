@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineProps, withDefaults, defineEmits } from 'vue';
-import SvgIcon from '../components/ui/SvgIcon.vue';
-import VButton from '../components/ui/VButton.vue';
+import SvgIcon from '@/components/ui/SvgIcon.vue';
+import VButton from '@/components/ui/VButton.vue';
 
 interface Props {
     firstName: string;
@@ -22,7 +22,7 @@ const emit = defineEmits<{
 
 <template>
     <div :class="$style.containerButton">
-        <div :class="$style.typeRoom">
+        <form :class="$style.typeRoom" @submit.prevent.stop="">
             <VButton
                 :name="props.firstName"
                 :class="[
@@ -31,7 +31,7 @@ const emit = defineEmits<{
                         [$style.active]: !props.active,
                     },
                 ]"
-                @click.prevent="emit('clickFirst')"
+                @click="emit('clickFirst')"
             >
                 <SvgIcon
                     v-if="props.icon"
@@ -47,7 +47,7 @@ const emit = defineEmits<{
                         [$style.active]: props.active,
                     },
                 ]"
-                @click.prevent="emit('clickLast')"
+                @click="emit('clickLast')"
             >
                 <SvgIcon
                     v-if="props.icon"
@@ -55,7 +55,7 @@ const emit = defineEmits<{
                     :class="$style.iconRoom"
                 />
             </VButton>
-        </div>
+        </form>
     </div>
 </template>
 

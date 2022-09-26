@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import SvgIcon from '../components/ui/SvgIcon.vue';
-import RegistrationForm from '../components/RegistrationForm.vue';
+import SvgIcon from '@/components/ui/SvgIcon.vue';
+import RegistrationForm from '@/components/RegistrationForm.vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Autoplay } from 'swiper';
 import 'swiper/css';
@@ -92,13 +92,13 @@ const startLogin = () => (step.value = 3);
                     $style.contentRegister_vertical,
                 ]"
             />
-            <LoginForm
-                v-else-if="step === 3"
-                :class-container="[
-                    $style.contentRegister,
-                    $style.contentRegister_vertical,
-                ]"
-            />
+            <!--            <LoginForm-->
+            <!--                v-else-if="step === 3"-->
+            <!--                :class-container="[-->
+            <!--                    $style.contentRegister,-->
+            <!--                    $style.contentRegister_vertical,-->
+            <!--                ]"-->
+            <!--            />-->
         </div>
     </div>
 </template>

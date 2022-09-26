@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import VInput from '@/components/ui/VInput.vue';
-import VErrorList from '@/comonents/ui/VErrorList.vue';
-import VToggleButton from '@/comonents/ui/VToggleButton.vue';
-import VButton from '@/comonents/ui/VButton.vue';
-import { defineProps, withDefaults } from 'vue';
+import VErrorList from '@/components/ui/VErrorList.vue';
+import VToggleButton from '@/components/ui/VToggleButton.vue';
+import VButton from '@/components/ui/VButton.vue';
+import { defineProps, withDefaults, ref } from 'vue';
 
+// интерфейс пропсов и пропсы
 interface Props {
     classContainer?: Array<string> | string;
 }
@@ -12,11 +13,29 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     classContainer: '',
 });
+
+// реактивные переменные
+const errors = ref<Array<string>>([]);
+const username = ref<string>('');
+const email = ref<string>('');
+const password = ref<string>('');
+const gender = ref<boolean>(false);
+
+const setName = (e: string): string => (username.value = e);
+const setEmail = (e: string): string => (email.value = e);
+const setPassword = (e: string): string => (password.value = e);
+const setRegistration = () => {
+    errors.value = [];
+    console.log('setRegistration');
+    // const url = moduleApi.authorization.registration;
+    // const gender = this.gender ? 'муж' : 'жен';
+};
 </script>
 
 <template>
     <div :class="[$style.container, props.classContainer]">
         <form :class="$style.form" @submit.prevent="setRegistration">
+            {{ username }}
             <VInput
                 label="ваше имя"
                 :value="username"
@@ -41,8 +60,8 @@ const props = withDefaults(defineProps<Props>(), {
                 first-name="женский"
                 last-name="мужской"
                 :icon="false"
-                @clickFirst="gender = false"
-                @clickLast="gender = true"
+                @click-first="gender = false"
+                @click-last="gender = true"
             />
             <VButton
                 :class-container="$style.buttonRegister"

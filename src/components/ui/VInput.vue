@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, withDefaults } from 'vue';
+import { defineProps, withDefaults, defineEmits } from 'vue';
 
 interface Props {
     value: string;
@@ -11,6 +11,10 @@ const props = withDefaults(defineProps<Props>(), {
     label: '',
     classContainer: () => '',
 });
+
+const emit = defineEmits<{
+    (e: 'input', value: string): void;
+}>();
 </script>
 
 <template>
@@ -21,8 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
         <input
             :class="$style.input"
             :value="props.value"
-            @input="$emit('input', $event.target.value.trim())"
-            @change="$emit('change', $event.target.value.trim())"
+            @input="emit('input', $event.target.value.trim())"
         />
     </div>
 </template>
