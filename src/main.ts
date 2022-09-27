@@ -2,16 +2,12 @@ import { createApp } from 'vue';
 import './reset.scss';
 import './default.scss';
 import 'virtual:svg-icons-register';
-import App from './App.vue';
-import router from './router/index';
+import App from '@/App.vue';
+import router from '@/router/index';
 import { createPinia } from 'pinia';
 import VueAxios from 'vue-axios';
-import axiosApp from './api/axios/axios';
-import { urlAuthorization } from './api/urls/urlAuthorization';
-// import { AuthorizationUrlTypes } from './types/urls/authorizationUrlTypes'
-// import type { InjectionKey } from 'vue';
-
-// const urlAuth = Symbol() as InjectionKey<AuthorizationUrlTypes>
+import axiosApp from '@/api/axios/axios';
+import { urlAuthorization, urlAuth } from '@/api/urls/urlAuthorization';
 
 // инициализируем ананас
 const pinia = createPinia();
@@ -29,7 +25,7 @@ app.use(VueAxios, axiosApp);
 // провайдим axios через всё приложение
 app.provide('axios', app.config.globalProperties.axios);
 // внедряем url пути для авторизации
-// app.provide(urlAuth, urlAuthorization);
+app.provide(urlAuth, urlAuthorization);
 // монтируем приложение в див
 app.mount('#app');
 

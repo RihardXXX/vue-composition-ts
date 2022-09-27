@@ -4,6 +4,12 @@ import VErrorList from '@/components/ui/VErrorList.vue';
 import VToggleButton from '@/components/ui/VToggleButton.vue';
 import VButton from '@/components/ui/VButton.vue';
 import { defineProps, withDefaults, ref } from 'vue';
+import { inject } from 'vue';
+import { urlAuth } from '@/api/urls/urlAuthorization';
+import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes'
+
+const urls = inject<AuthorizationUrlTypes>(urlAuth);
+const axios = inject<any>('axios');
 
 // интерфейс пропсов и пропсы
 interface Props {
@@ -24,11 +30,29 @@ const gender = ref<boolean>(false);
 const setName = (e: string): string => (username.value = e);
 const setEmail = (e: string): string => (email.value = e);
 const setPassword = (e: string): string => (password.value = e);
-const setRegistration = () => {
+
+const setRegistration = (): void => {
     errors.value = [];
-    console.log('setRegistration');
-    // const url = moduleApi.authorization.registration;
-    // const gender = this.gender ? 'муж' : 'жен';
+    const url: string | undefined = urls?.registration;
+    console.log('url: ', url);
+    const sex: string = gender.value ? 'муж' : 'жен';
+
+    axios.post(url, {
+        user: {
+            username,
+            email,
+            password,
+            gender: sex,
+        },
+    })
+        .then((res: any) => {
+            console.log('res: ', res)
+            // this.registerUser(data.user);
+        })
+        .catch((err: Error) => {
+            console.log('err: ', err);
+            // errors.value = err.response.data.message
+        });
 };
 </script>
 
