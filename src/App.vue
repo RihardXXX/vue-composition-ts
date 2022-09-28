@@ -2,10 +2,10 @@
 import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import StartLoadingPage from '@/components/StartLoadingPage.vue';
-import { useAuthorizationStore } from './store/authorization';
+import { useAuthorizationStore } from '@/store/authorization';
 
 // подключаемся к сторе и получаем состояние авторизации
-const authorization = useAuthorizationStore();
+const authorizationStore = useAuthorizationStore();
 
 // console.log(authorization);
 

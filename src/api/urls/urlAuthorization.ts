@@ -1,5 +1,5 @@
-import { InjectionKey } from 'vue'
-import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes'
+import { InjectionKey } from 'vue';
+import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';
 
 export const urlAuthorization: AuthorizationUrlTypes = {
     registration: '/authorization/registration',

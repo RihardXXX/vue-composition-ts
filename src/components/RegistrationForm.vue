@@ -6,13 +6,20 @@ import VButton from '@/components/ui/VButton.vue';
 import { defineProps, withDefaults, ref } from 'vue';
 import { inject } from 'vue';
 import { urlAuth } from '@/api/urls/urlAuthorization';
-import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes'
+import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';
+import { AxiosResponse } from 'axios';
+import { RegisterUserSend } from '@/types/registration/registerUserSend';
+import { User } from '@/types/store/user';
+import { useAuthorizationStore } from '@/store/authorization';
 
+// получение ссылок на юрл и либы аксиос для запросов
 const urls = inject<AuthorizationUrlTypes>(urlAuth);
 const axios = inject<any>('axios');
 
-// интерфейс пропсов и пропсы
-interface Props {
+// получение сторы для добавления пользователя
+const authorizationStore = useAuthorizationStore();
+
+export interface Props {
     classContainer?: Array<string> | string;
 }
 
@@ -34,24 +41,25 @@ const setPassword = (e: string): string => (password.value = e);
 const setRegistration = (): void => {
     errors.value = [];
     const url: string | undefined = urls?.registration;
-    console.log('url: ', url);
+    // console.log('url: ', url);
     const sex: string = gender.value ? 'муж' : 'жен';
 
-    axios.post(url, {
-        user: {
-            username,
-            email,
-            password,
-            gender: sex,
-        },
-    })
-        .then((res: any) => {
-            console.log('res: ', res)
-            // this.registerUser(data.user);
+    axios
+        .post(url, {
+            user: {
+                username: username.value,
+                email: email.value,
+                password: password.value,
+                gender: sex,
+            } as RegisterUserSend,
         })
-        .catch((err: Error) => {
-            console.log('err: ', err);
-            // errors.value = err.response.data.message
+        .then((res: AxiosResponse) => {
+            const user: User = res.data.user;
+            console.log('user: ', user);
+            authorizationStore.registerUser(user);
+        })
+        .catch((err: any) => {
+            errors.value = err.response.data.message as Array<string>;
         });
 };
 </script>
@@ -59,7 +67,6 @@ const setRegistration = (): void => {
 <template>
     <div :class="[$style.container, props.classContainer]">
         <form :class="$style.form" @submit.prevent="setRegistration">
-            {{ username }}
             <VInput
                 label="ваше имя"
                 :value="username"
@@ -134,116 +141,3 @@ const setRegistration = (): void => {
     margin-top: 1rem;
 }
 </style>
-
-<!--<script>-->
-<!--    import { mapActions } from 'vuex';-->
-<!--    import VInput from '~/components/ui/input/VInput';-->
-<!--    import VButton from '~/components/ui/button/VButton';-->
-<!--    import VErrorList from '~/components/ui/error/VErrorList';-->
-<!--    import moduleApi from '~/config/api/module';-->
-<!--    import VToggleButton from '~/components/main/VToggleButton';-->
-
-<!--    export default {-->
-<!--        name: 'RegistrationForm',-->
-
-<!--        components: {-->
-<!--            VInput,-->
-<!--            VButton,-->
-<!--            VErrorList,-->
-<!--            VToggleButton,-->
-<!--        },-->
-
-<!--        props: {-->
-<!--            classContainer: {-->
-<!--                type: [String, Array],-->
-<!--                required: false,-->
-<!--                default: '',-->
-<!--            },-->
-<!--        },-->
-
-<!--        data() {-->
-<!--            return {-->
-<!--                errors: [],-->
-
-<!--                username: '',-->
-<!--                email: '',-->
-<!--                password: '',-->
-<!--                gender: false,-->
-<!--            };-->
-<!--        },-->
-
-<!--        methods: {-->
-<!--            ...mapActions('authorization', [-->
-<!--                'registerUser',-->
-<!--            ]),-->
-
-<!--            // установка имени-->
-<!--            setName(e) {-->
-<!--                this.username = e.trim();-->
-<!--            },-->
-
-<!--            setEmail(e) {-->
-<!--                this.email = e.trim();-->
-<!--            },-->
-
-<!--            setPassword(e) {-->
-<!--                this.password = e.trim();-->
-<!--            },-->
-
-<!--            setRegistration() {-->
-<!--                this.errors = [];-->
-<!--                const url = moduleApi.authorization.registration;-->
-<!--                const gender = this.gender ? 'муж' : 'жен';-->
-
-<!--                this.$axios.post(url, {-->
-<!--                    user: {-->
-<!--                        username: this.username,-->
-<!--                        email: this.email,-->
-<!--                        password: this.password,-->
-<!--                        gender,-->
-<!--                    },-->
-<!--                })-->
-<!--                    .then(({ data }) => {-->
-<!--                        this.registerUser(data.user);-->
-<!--                    })-->
-<!--                    .catch(err => this.errors = err.response.data.message);-->
-<!--            },-->
-
-<!--        },-->
-<!--    };-->
-<!--</script>-->
-
-<!--<style lang="scss" module>-->
-<!--    .container {-->
-<!--        padding: 0;-->
-<!--    }-->
-
-<!--    .form {-->
-<!--        display: flex;-->
-<!--        align-items: center;-->
-<!--        justify-content: space-between;-->
-<!--        width: 100%;-->
-<!--        flex-direction: column;-->
-<!--    }-->
-
-<!--    .inputItem {-->
-<!--        margin-top: 1.2rem;-->
-
-<!--        &:first-child {-->
-<!--            margin-top: 0;-->
-<!--        }-->
-<!--    }-->
-
-<!--    .genderQuestion {-->
-<!--        padding: .4rem 0;-->
-<!--        text-align: center;-->
-<!--    }-->
-
-<!--    .buttonRegister {-->
-<!--        margin-top: 1rem;-->
-<!--    }-->
-
-<!--    .errorList {-->
-<!--        margin-top: 1rem;-->
-<!--    }-->
-<!--</style>-->

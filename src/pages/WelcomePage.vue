@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 import RegistrationForm from '@/components/RegistrationForm.vue';
+import LoginForm from '@/components/LoginForm.vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Autoplay } from 'swiper';
 import 'swiper/css';
@@ -9,9 +10,6 @@ import 'swiper/scss/autoplay';
 import slide1 from '../assets/images/slide1.jpeg';
 import slide2 from '../assets/images/slide2.jpeg';
 import slide3 from '../assets/images/slide3.jpeg';
-
-const onSwiper = (swiper: object): void =>
-    console.log('initial swiper: ', swiper);
 
 // подключение модуля автовоспроизведения
 const modules = [Autoplay];
@@ -41,8 +39,8 @@ const titleForm = computed<string>(() => {
     }
 });
 
-const startRegister = () => (step.value = 2);
-const startLogin = () => (step.value = 3);
+const startRegister = (): number => (step.value = 2);
+const startLogin = (): number => (step.value = 3);
 </script>
 
 <template>
@@ -52,7 +50,6 @@ const startLogin = () => (step.value = 3);
             :autoplay="{ delay: '4000' }"
             :speed="2000"
             :class="$style.swiper"
-            @swiper="onSwiper"
         >
             <swiper-slide :class="$style.image">
                 <img :src="slide1" :class="$style.img" />
@@ -87,18 +84,12 @@ const startLogin = () => (step.value = 3);
             </div>
             <RegistrationForm
                 v-else-if="step === 2"
-                :class-container="[
-                    $style.contentRegister,
-                    $style.contentRegister_vertical,
-                ]"
+                :class-container="$style.contentRegister"
             />
-            <!--            <LoginForm-->
-            <!--                v-else-if="step === 3"-->
-            <!--                :class-container="[-->
-            <!--                    $style.contentRegister,-->
-            <!--                    $style.contentRegister_vertical,-->
-            <!--                ]"-->
-            <!--            />-->
+            <LoginForm
+                v-else-if="step === 3"
+                :class-container="$style.contentRegister"
+            />
         </div>
     </div>
 </template>

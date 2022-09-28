@@ -4,12 +4,12 @@ import { defineProps, withDefaults, defineEmits } from 'vue';
 interface Props {
     value: string;
     label?: string;
-    classContainer?: string | Array<string>;
+    classContainer?: Array<string> | string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     label: '',
-    classContainer: () => '',
+    classContainer: '',
 });
 
 const emit = defineEmits<{
