@@ -84,11 +84,11 @@ const startLogin = (): number => (step.value = 3);
             </div>
             <RegistrationForm
                 v-else-if="step === 2"
-                :class-container="$style.contentRegister"
+                :class-container="[$style.contentRegister, $style._vertical]"
             />
             <LoginForm
                 v-else-if="step === 3"
-                :class-container="$style.contentRegister"
+                :class-container="[$style.contentRegister, $style._vertical]"
             />
         </div>
     </div>
@@ -192,10 +192,10 @@ const startLogin = (): number => (step.value = 3);
     align-items: center;
     justify-content: space-between;
     padding: 1.2rem 1.3rem;
+}
 
-    &_vertical {
-        flex-direction: column;
-    }
+._vertical {
+    flex-direction: column;
 }
 
 .itemRegister {

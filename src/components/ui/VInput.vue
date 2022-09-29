@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, withDefaults, defineEmits } from 'vue';
+import { withDefaults } from 'vue';
 
 interface Props {
     value: string;

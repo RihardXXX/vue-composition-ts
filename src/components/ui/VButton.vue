@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { withDefaults, defineProps, defineEmits } from 'vue';
-import { ClassContainer } from '@/types/common/classContainer';
+import { withDefaults } from 'vue';
 
 interface Props {
     name?: string;
-    classContainer?: ClassContainer | '';
+    classContainer?: Array<string> | string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

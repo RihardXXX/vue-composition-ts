@@ -3,7 +3,7 @@ import VInput from '@/components/ui/VInput.vue';
 import VErrorList from '@/components/ui/VErrorList.vue';
 import VToggleButton from '@/components/ui/VToggleButton.vue';
 import VButton from '@/components/ui/VButton.vue';
-import { defineProps, withDefaults, ref } from 'vue';
+import { withDefaults, ref } from 'vue';
 import { inject } from 'vue';
 import { urlAuth } from '@/api/urls/urlAuthorization';
 import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';

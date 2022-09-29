@@ -7,13 +7,15 @@ import { useAuthorizationStore } from '@/store/authorization';
 // подключаемся к сторе и получаем состояние авторизации
 const authorizationStore = useAuthorizationStore();
 
+console.log('authorizationStore.status: ', authorizationStore.status);
+
 // console.log(authorization);
 
 const router = useRouter();
 
 // переменные шага и статуса авторизации
 const step = ref<number>(1);
-const isLoggedIn = ref<boolean>(false);
+let isLoggedIn = ref<boolean>(false);
 
 // смена роута в зависимости от статуса
 const changeRoute = (status: boolean): void => {
@@ -25,7 +27,7 @@ const changeRoute = (status: boolean): void => {
 };
 
 // слежка за статусом авторизации
-watch(isLoggedIn, changeRoute);
+watch(() => authorizationStore.status, changeRoute);
 
 onMounted(() => {
     // запускаем страницу загрузки 2 секунды

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps, withDefaults, defineEmits } from 'vue';
+import { withDefaults } from 'vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 import VButton from '@/components/ui/VButton.vue';
 

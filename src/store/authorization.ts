@@ -37,6 +37,8 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         });
     }
 
+    const status = computed<boolean>(() => isLoggedIn.value);
+
     return {
         userList,
         user,
@@ -47,5 +49,6 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         allUsers,
         registerUser,
         login,
+        status,
     };
 });
