@@ -1,8 +1,15 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, inject } from 'vue';
 import { User } from '@/types/store/user';
+import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';
+import { urlAuth } from '@/api/urls/urlAuthorization';
+import { AxiosResponse } from 'axios';
 
 export const useAuthorizationStore = defineStore('authorization', () => {
+    // пути для запросов и аксиос
+    const urls = inject<AuthorizationUrlTypes>(urlAuth);
+    const axios = inject<any>('axios');
+
     // массив пользователей
     const userList = ref<Array<any>>([]);
     // текущий авторизованный пользователь
@@ -37,6 +44,25 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         });
     }
 
+    // автоматическая авторизация при запуске приложения
+    function authUser(): void {
+        const tokenFromLocalStorage: string | null =
+            window?.localStorage.getItem('token');
+        if (!tokenFromLocalStorage) {
+            return;
+        }
+        const url: string | undefined = urls?.auth;
+
+        axios
+            .get(url)
+            .then((res: AxiosResponse): void => {
+                user.value = res.data.user as User;
+                isLoggedIn.value = true;
+                token.value = tokenFromLocalStorage;
+            })
+            .catch((err: any) => console.log(err.response.data.message));
+    }
+
     const status = computed<boolean>(() => isLoggedIn.value);
 
     return {
@@ -47,8 +73,9 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         errors,
         isLoading,
         allUsers,
+        status,
         registerUser,
         login,
-        status,
+        authUser,
     };
 });

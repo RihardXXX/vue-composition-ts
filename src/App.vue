@@ -6,19 +6,14 @@ import { useAuthorizationStore } from '@/store/authorization';
 
 // подключаемся к сторе и получаем состояние авторизации
 const authorizationStore = useAuthorizationStore();
-
-console.log('authorizationStore.status: ', authorizationStore.status);
-
-// console.log(authorization);
-
 const router = useRouter();
 
 // переменные шага и статуса авторизации
 const step = ref<number>(1);
-let isLoggedIn = ref<boolean>(false);
 
 // смена роута в зависимости от статуса
 const changeRoute = (status: boolean): void => {
+    console.log('status: ', status);
     if (status) {
         router.push({ name: 'room-list' });
     } else {
@@ -29,7 +24,10 @@ const changeRoute = (status: boolean): void => {
 // слежка за статусом авторизации
 watch(() => authorizationStore.status, changeRoute);
 
-onMounted(() => {
+onMounted(async () => {
+    // запускаем проверку авторизации пользователя
+    await authorizationStore.authUser();
+
     // запускаем страницу загрузки 2 секунды
     new Promise((resolve): void => {
         setTimeout(() => {
@@ -37,7 +35,7 @@ onMounted(() => {
             resolve('');
         }, 2000);
     }) // а потом производим рироут в зависимости от статуса авторизации
-        .then((): void => changeRoute(isLoggedIn.value));
+        .then((): void => changeRoute(authorizationStore.status));
 });
 </script>
 
@@ -45,6 +43,6 @@ onMounted(() => {
     <StartLoadingPage v-if="step === 1" />
     <div v-else>
         <router-view></router-view>
-        <div v-show="isLoggedIn">header</div>
+        <div v-show="authorizationStore.status">header</div>
     </div>
 </template>
