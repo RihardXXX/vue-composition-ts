@@ -65,11 +65,20 @@ export const useAuthorizationStore = defineStore('authorization', () => {
             .catch((err: any) => console.log(err.response.data.message));
     }
 
+    // выйти из состояния авторизации
+    function logout(): void {
+        window.localStorage.removeItem('token');
+        user.value = null;
+        isLoggedIn.value = false;
+        token.value = '';
+    }
 
     // ===== Это геттеры =====
     const status = computed<boolean>(() => isLoggedIn.value);
-    const username = computed<string>(() => user.value?.username || '')
-    const isInvited = computed<boolean>(() => Boolean(user.value?.invitedRooms?.length))
+    const username = computed<string>(() => user.value?.username || '');
+    const isInvited = computed<boolean>(() =>
+        Boolean(user.value?.invitedRooms?.length)
+    );
 
     return {
         userList,
@@ -82,6 +91,7 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         status,
         registerUser,
         login,
+        logout,
         authUser,
         username,
         isInvited,

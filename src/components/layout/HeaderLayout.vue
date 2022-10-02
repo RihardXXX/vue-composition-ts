@@ -4,18 +4,17 @@ import SvgIcon from '@/components/ui/SvgIcon.vue';
 import PersonLogo from '@/components/PersonLogo.vue';
 import avatar1 from '@/assets/images/avatar1.png';
 import { useAuthorizationStore } from '@/store/authorization';
-import { toRefs } from 'vue'
+// import { toRefs } from 'vue'
 
 // подключаемся к сторе и получаем состояние авторизации
 const authorizationStore = useAuthorizationStore();
 
-const { isInvited, username } = toRefs(authorizationStore);
+const { isInvited, username } = authorizationStore;
 
 const openModal = (): void => console.log('openModal');
 const openModalInvites = (): void => console.log('openModalInvites');
 const selectRooms = (): void => console.log('selectRooms');
-const exitLogin = (): void => console.log('exitLogin');
-
+const exitLogin = (): void => authorizationStore.logout();
 </script>
 
 <template>
