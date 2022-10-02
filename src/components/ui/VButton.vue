@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { withDefaults } from 'vue';
+import { toRefs, withDefaults } from 'vue';
 
 interface Props {
     name?: string;
@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<Props>(), {
     name: '',
     classContainer: '',
 });
+const { name, classContainer } = toRefs(props);
 
 // type-based
 const emit = defineEmits<{
@@ -18,12 +19,9 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <button
-        :class="[$style.container, props.classContainer]"
-        @click="emit('click')"
-    >
+    <button :class="[$style.container, classContainer]" @click="emit('click')">
         <slot></slot>
-        <span :class="$style.name">{{ props.name }}</span>
+        <span :class="$style.name">{{ name }}</span>
     </button>
 </template>
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { withDefaults } from 'vue';
+import { toRefs, withDefaults } from 'vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 import VButton from '@/components/ui/VButton.vue';
 
@@ -13,6 +13,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     icon: true,
 });
+const { firstName, lastName, active, icon } = toRefs(props);
 
 const emit = defineEmits<{
     (e: 'clickFirst'): void;
@@ -24,36 +25,28 @@ const emit = defineEmits<{
     <div :class="$style.containerButton">
         <form :class="$style.typeRoom" @submit.prevent.stop="">
             <VButton
-                :name="props.firstName"
+                :name="firstName"
                 :class="[
                     $style.buttonType,
                     {
-                        [$style.active]: !props.active,
+                        [$style.active]: !active,
                     },
                 ]"
                 @click="emit('clickFirst')"
             >
-                <SvgIcon
-                    v-if="props.icon"
-                    name="public"
-                    :class="$style.iconRoom"
-                />
+                <SvgIcon v-if="icon" name="public" :class="$style.iconRoom" />
             </VButton>
             <VButton
-                :name="props.lastName"
+                :name="lastName"
                 :class="[
                     $style.buttonType,
                     {
-                        [$style.active]: props.active,
+                        [$style.active]: active,
                     },
                 ]"
                 @click="emit('clickLast')"
             >
-                <SvgIcon
-                    v-if="props.icon"
-                    name="private"
-                    :class="$style.iconRoom"
-                />
+                <SvgIcon v-if="icon" name="private" :class="$style.iconRoom" />
             </VButton>
         </form>
     </div>

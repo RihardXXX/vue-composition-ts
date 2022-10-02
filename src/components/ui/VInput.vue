@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { withDefaults } from 'vue';
+import { toRefs, withDefaults } from 'vue';
 
 interface Props {
     value: string;
@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<Props>(), {
     label: '',
     classContainer: '',
 });
+const { value, label, classContainer } = toRefs(props);
 
 const emit = defineEmits<{
     (e: 'input', value: string): void;
@@ -18,13 +19,13 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div :class="[$style.container, props.classContainer]">
+    <div :class="[$style.container, classContainer]">
         <div v-if="props.label" :class="$style.label">
-            {{ props.label }}
+            {{ label }}
         </div>
         <input
             :class="$style.input"
-            :value="props.value"
+            :value="value"
             @input="emit('input', $event.target.value.trim())"
         />
     </div>

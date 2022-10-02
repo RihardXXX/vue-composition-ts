@@ -7,5 +7,15 @@ console.log(rooms);
 </script>
 
 <template>
-    <h1>RoomListPage</h1>
+    <div :class="$style.container">
+        Room-list page
+    </div>
 </template>
+
+
+<style lang='scss' module>
+    .container {
+        min-height: 80vh;
+        width: 100%;
+    }
+</style>

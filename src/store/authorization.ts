@@ -10,6 +10,7 @@ export const useAuthorizationStore = defineStore('authorization', () => {
     const urls = inject<AuthorizationUrlTypes>(urlAuth);
     const axios = inject<any>('axios');
 
+    // ===== Это состояние =====
     // массив пользователей
     const userList = ref<Array<any>>([]);
     // текущий авторизованный пользователь
@@ -25,6 +26,7 @@ export const useAuthorizationStore = defineStore('authorization', () => {
     // все пользователи
     const allUsers = ref<Array<any>>([]);
 
+    // ===== Это функции экшены =====
     // регистрация пользователя
     function registerUser(newUser: User): void {
         user.value = newUser;
@@ -63,7 +65,11 @@ export const useAuthorizationStore = defineStore('authorization', () => {
             .catch((err: any) => console.log(err.response.data.message));
     }
 
+
+    // ===== Это геттеры =====
     const status = computed<boolean>(() => isLoggedIn.value);
+    const username = computed<string>(() => user.value?.username || '')
+    const isInvited = computed<boolean>(() => Boolean(user.value?.invitedRooms?.length))
 
     return {
         userList,
@@ -77,5 +83,7 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         registerUser,
         login,
         authUser,
+        username,
+        isInvited,
     };
 });

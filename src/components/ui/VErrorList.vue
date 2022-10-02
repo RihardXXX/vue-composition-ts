@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { withDefaults } from 'vue';
+import { toRefs, withDefaults } from 'vue';
 
 interface Props {
     errorList: Array<string>;
@@ -9,14 +9,15 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     classContainer: '',
 });
+const { classContainer, errorList } = toRefs(props);
 </script>
 
 <template>
     <ul
         v-if="props.errorList.length"
-        :class="[$style.container, props.classContainer]"
+        :class="[$style.container, classContainer]"
     >
-        <li v-for="(error, i) in props.errorList" :key="i" :class="$style.item">
+        <li v-for="(error, i) in errorList" :key="i" :class="$style.item">
             <span>
                 {{ error }}
             </span>

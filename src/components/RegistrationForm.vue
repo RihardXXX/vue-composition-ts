@@ -3,7 +3,7 @@ import VInput from '@/components/ui/VInput.vue';
 import VErrorList from '@/components/ui/VErrorList.vue';
 import VToggleButton from '@/components/ui/VToggleButton.vue';
 import VButton from '@/components/ui/VButton.vue';
-import { withDefaults, ref } from 'vue';
+import { withDefaults, ref, toRefs } from 'vue';
 import { inject } from 'vue';
 import { urlAuth } from '@/api/urls/urlAuthorization';
 import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';
@@ -26,6 +26,8 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
     classContainer: '',
 });
+
+const { classContainer } = toRefs(props);
 
 // реактивные переменные
 const errors = ref<Array<string>>([]);
@@ -65,7 +67,7 @@ const setRegistration = (): void => {
 </script>
 
 <template>
-    <div :class="[$style.container, props.classContainer]">
+    <div :class="[$style.container, classContainer]">
         <form :class="$style.form" @submit.prevent="setRegistration">
             <VInput
                 label="ваше имя"

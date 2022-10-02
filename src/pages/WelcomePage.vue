@@ -14,14 +14,6 @@ import slide3 from '../assets/images/slide3.jpeg';
 // подключение модуля автовоспроизведения
 const modules = [Autoplay];
 
-// ===
-// import { inject } from 'vue';
-//
-// const axios: any = inject('axios');
-//
-// axios.get('/test').then((res: any) => console.log(res))
-// ===
-
 // шаг
 const step = ref<number>(1);
 
@@ -52,13 +44,13 @@ const startLogin = (): number => (step.value = 3);
             :class="$style.swiper"
         >
             <swiper-slide :class="$style.image">
-                <img :src="slide1" :class="$style.img" />
+                <img :src="slide1" :class="$style.img" alt="slide photo1" />
             </swiper-slide>
             <swiper-slide :class="$style.image">
-                <img :src="slide2" :class="$style.img" />
+                <img :src="slide2" :class="$style.img" alt="slide photo2" />
             </swiper-slide>
             <swiper-slide :class="$style.image">
-                <img :src="slide3" :class="$style.img" />
+                <img :src="slide3" :class="$style.img" alt="slide photo3" />
             </swiper-slide>
         </swiper>
 

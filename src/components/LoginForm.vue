@@ -4,7 +4,7 @@ import VErrorList from '@/components/ui/VErrorList.vue';
 import VButton from '@/components/ui/VButton.vue';
 import { urlAuth } from '@/api/urls/urlAuthorization';
 import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';
-import { withDefaults, ref, inject } from 'vue';
+import { withDefaults, ref, inject, toRefs } from 'vue';
 import { LoginUserSend } from '@/types/registration/loginUserSend';
 import { AxiosResponse } from 'axios';
 import { User } from '@/types/store/user';
@@ -24,6 +24,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     classContainer: '',
 });
+const { classContainer } = toRefs(props);
 
 const urls = inject<AuthorizationUrlTypes>(urlAuth);
 const axios = inject<any>('axios');
@@ -72,7 +73,7 @@ const setLogin = () => {
 </script>
 
 <template>
-    <div :class="[$style.container, props.classContainer]">
+    <div :class="[$style.container, classContainer]">
         <form :class="$style.form" @submit.prevent="setLogin">
             <VInput
                 label="ваша почта"

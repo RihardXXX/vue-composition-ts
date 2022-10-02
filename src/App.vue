@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import StartLoadingPage from '@/components/StartLoadingPage.vue';
 import { useAuthorizationStore } from '@/store/authorization';
+import HeaderLayout from '@/components/layout/HeaderLayout.vue';
 
 // подключаемся к сторе и получаем состояние авторизации
 const authorizationStore = useAuthorizationStore();
@@ -43,6 +44,6 @@ onMounted(async () => {
     <StartLoadingPage v-if="step === 1" />
     <div v-else>
         <router-view></router-view>
-        <div v-show="authorizationStore.status">header</div>
+        <HeaderLayout v-show="authorizationStore.status" />
     </div>
 </template>
