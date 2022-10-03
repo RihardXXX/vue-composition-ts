@@ -1,5 +1,5 @@
 // Интерфейс и объект для вызова событий от клиента серверу
-interface SocketEventsClient {
+interface SocketEventsServer {
     updateAllRooms: string;
     updateMyRooms: string;
     initialRooms: string;
@@ -10,7 +10,15 @@ interface SocketEventsClient {
     deleteMyRoom: string;
 }
 
-const socketEventsClient: SocketEventsClient = {
+interface SocketEventsClient {
+    initialRoomsClient: string;
+    getMyRooms: string;
+    setError: string;
+    updateCurrentRoom: string;
+    updateUserClient: string;
+}
+
+const socketEventsServer: SocketEventsServer = {
     updateAllRooms: 'updateAllRooms',
     updateMyRooms: 'updateMyRooms',
     initialRooms: 'initialRooms',
@@ -21,4 +29,12 @@ const socketEventsClient: SocketEventsClient = {
     deleteMyRoom: 'deleteMyRoom',
 };
 
-export { socketEventsClient };
+const socketEventsClient: SocketEventsClient = {
+    initialRoomsClient: 'initialRoomsClient',
+    getMyRooms: 'getMyRooms',
+    setError: 'setError',
+    updateCurrentRoom: 'updateCurrentRoom',
+    updateUserClient: 'updateUserClient',
+};
+
+export { socketEventsServer, socketEventsClient };

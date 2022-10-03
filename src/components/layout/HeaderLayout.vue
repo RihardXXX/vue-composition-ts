@@ -114,7 +114,7 @@ const exitLogin = (): void => authorizationStore.logout();
     left: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 20%;
     padding: 0.4rem 0.6rem;
     border: 2px solid $black-900;
@@ -122,6 +122,7 @@ const exitLogin = (): void => authorizationStore.logout();
 
     span {
         color: $black-900;
+        margin-left: 1rem;
     }
 
     &:hover {
