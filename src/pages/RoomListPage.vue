@@ -22,17 +22,15 @@ onMounted(() => {
 });
 
 // функции по работе с комнатами
-const nextRoom = (room: Room): void => console.log(room);
-const deleteRoom = (room: Room): void => console.log(room);
-const toInvite = (room: Room): void => console.log(room);
+const nextRoom = (room: Room): void => console.log('nextRoom', room);
+const deleteRoom = (room: Room): void => console.log('deleteRoom', room);
+const toInvite = (room: Room): void => console.log('toInvite', room);
 </script>
 
 <template>
     <div :class="$style.container">
-        <!--        <pre>-->
-        <!--            {{ rooms }}-->
-        <!--        </pre>-->
         <div :class="$style.column">
+            <MqResponsive target="xs"> test xs </MqResponsive>
             <div :class="$style.head">
                 <SvgIcon name="chats" :class="$style.chatsIcon" />
             </div>
@@ -40,7 +38,7 @@ const toInvite = (room: Room): void => console.log(room);
             <ul v-if="rooms.length" :class="$style.roomsList">
                 <RoomItem
                     v-for="room in rooms"
-                    :key="room.id"
+                    :key="room._id"
                     :name="room.name"
                     :is-my-room="room.author === currentUser._id"
                     :is-private="
@@ -59,17 +57,19 @@ const toInvite = (room: Room): void => console.log(room);
             </div>
             <h4>ваши комнаты</h4>
             <ul v-if="myRooms.length" :class="$style.roomsList">
-                <!--                <RoomItem-->
-                <!--                    v-for="room in myRooms"-->
-                <!--                    :key="room.id"-->
-                <!--                    :name="room.name"-->
-                <!--                    :is-my-room="room.author === user._id"-->
-                <!--                    :is-private="room.author === user._id && room.private"-->
-                <!--                    :count-user="room.users.length"-->
-                <!--                    @click="() => nextRoom(room)"-->
-                <!--                    @delete-room="() => deleteRoom(room)"-->
-                <!--                    @to-invite="() => toInvite(room)"-->
-                <!--                />-->
+                <RoomItem
+                    v-for="room in myRooms"
+                    :key="room._id"
+                    :name="room.name"
+                    :is-my-room="room.author === currentUser._id"
+                    :is-private="
+                        room.author === currentUser._id && room.private
+                    "
+                    :count-user="room.users.length"
+                    @click="() => nextRoom(room)"
+                    @delete-room="() => deleteRoom(room)"
+                    @to-invite="() => toInvite(room)"
+                />
             </ul>
             <div v-else>вы пока не создали не одну комнату</div>
         </div>

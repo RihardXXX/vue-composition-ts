@@ -14,7 +14,7 @@ const step = ref<number>(1);
 
 // смена роута в зависимости от статуса
 const changeRoute = (status: boolean): void => {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     if (status) {
         router.push({ name: 'room-list' });
     } else {

@@ -4,17 +4,17 @@ const routes = [
     {
         path: '/welcome',
         name: 'welcome',
-        component: () => import('../pages/WelcomePage.vue'),
+        component: () => import('@/pages/WelcomePage.vue'),
     },
     {
         path: '/room-list',
         name: 'room-list',
-        component: import('../pages/RoomListPage.vue'),
+        component: () => import('@/pages/RoomListPage.vue'),
     },
     {
         path: '/current-room/:id',
         name: 'current-room',
-        component: import('../pages/CurrentRoomPage.vue'),
+        component: () => import('@/pages/CurrentRoomPage.vue'),
     },
 ];
 

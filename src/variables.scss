@@ -33,18 +33,20 @@ $offset: 4px;
 /* Breakpoints */
 
 $breakpoints: (
-    mobile: 412px,
-    mobile-l: 812px,
-    tablet: 1024px,
-    laptop: 1440px,
-    desktop: 1920px,
+    //xxs: 0,
+    xs: 360px,
+    sm: 767px,
+    md: 991px,
+    lg: 1279px,
+    xl: 1439px,
+    xxl: 1919px
 );
 
-@mixin respond-to($name) {
-    $max: map-get($breakpoints, $name);
+@mixin respond-to($name, $bp: $breakpoints) {
+    $max: breakpoint-max($name, $bp);
 
     @if $max {
-        @media only screen and (max-width: $max) {
+        @media (max-width: $max) {
             @content;
         }
     } @else {

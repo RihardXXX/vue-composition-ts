@@ -36,16 +36,17 @@ const emit = defineEmits<{
         ]"
         @click="emit('click')"
     >
-        <div :class="$style.roomName">
+        <div :class="[$style.roomName, $style._width]">
             <SvgIcon name="room" :class="$style.roomIcon" />
             <div :class="$style.linkItem">
                 {{ name }}
             </div>
         </div>
-        <div>
+        <div :class="$style.usersCounter">
             <span>
                 {{ countUser }}
             </span>
+            &nbsp;
             <span>
                 {{
                     plural(countUser, [
@@ -58,7 +59,7 @@ const emit = defineEmits<{
         </div>
         <button
             v-if="isMyRoom"
-            :class="$style.roomName"
+            :class="$style.deleteRoom"
             @click.stop="emit('deleteRoom')"
         >
             <SvgIcon name="close" :class="$style.deleteIcon" />
@@ -74,9 +75,11 @@ const emit = defineEmits<{
 
 <style lang="scss" module>
 .itemRoom {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4rem;
+    //align-items: center;
+    //justify-content: space-around;
     margin: 0.5rem;
     padding: 0.8rem 2rem;
     border: 0.08rem solid $gray-800;
@@ -98,13 +101,52 @@ const emit = defineEmits<{
             background: none;
         }
     }
+
+    @include respond-to(md) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        //justify-self: center;
+        //display: flex;
+        //flex-direction: column;
+        //align-items: center;
+        //justify-content: space-between;
+    }
 }
 
 .roomName {
+    padding: 0.4rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    //justify-content: space-between;
     //border: none;
+    border: 0.1rem solid $black-200;
+    transition: all 0.5s;
+
+    &:hover {
+        background-color: $black-100;
+        color: $white;
+
+        .linkItem {
+            color: $white;
+        }
+
+        .roomIcon {
+            fill: $white;
+        }
+    }
+
+    //@include respond-to(md) {
+    //    max-width: 50%;
+    //}
+}
+
+//._width {
+//    width: 6rem;
+//}
+
+.usersCounter {
+    display: flex;
+    align-items: center;
 }
 
 .roomIcon {
@@ -130,5 +172,32 @@ const emit = defineEmits<{
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
+
+    //@include respond-to(md) {
+    //    align-items: flex-start;
+    //    //
+    //    //.roomName {
+    //    //    width: 50%;
+    //    //}
+    //    //
+    //    //div {
+    //    //    width: 50%;
+    //    //}
+    //}
+}
+
+.deleteRoom {
+    border: 0.1rem solid $black-200;
+    transition: all 0.5s;
+
+    &:hover {
+        background-color: $black-100;
+        color: $white;
+    }
+
+    @include respond-to(md) {
+        max-width: 3rem;
+        max-height: 3rem;
+    }
 }
 </style>
