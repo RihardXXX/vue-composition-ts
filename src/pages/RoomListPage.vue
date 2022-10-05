@@ -30,7 +30,6 @@ const toInvite = (room: Room): void => console.log('toInvite', room);
 <template>
     <div :class="$style.container">
         <div :class="$style.column">
-            <MqResponsive target="xs"> test xs </MqResponsive>
             <div :class="$style.head">
                 <SvgIcon name="chats" :class="$style.chatsIcon" />
             </div>

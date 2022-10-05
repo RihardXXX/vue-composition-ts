@@ -11,7 +11,7 @@ const authorizationStore = useAuthorizationStore();
 
 const { isInvited, username } = authorizationStore;
 
-const openModal = (): void => console.log('openModal');
+const createRoom = (): void => console.log('createModal');
 const openModalInvites = (): void => console.log('openModalInvites');
 const selectRooms = (): void => console.log('selectRooms');
 const exitLogin = (): void => authorizationStore.logout();
@@ -22,7 +22,7 @@ const exitLogin = (): void => authorizationStore.logout();
         <VButton
             name="создать комнату"
             :class-container="$style.button"
-            @click="openModal"
+            @click="createRoom"
         >
             <div :class="$style.addRoom">
                 <div :class="$style.horizontal"></div>
@@ -55,7 +55,7 @@ const exitLogin = (): void => authorizationStore.logout();
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-height: 20vh;
+    height: 20vh;
     //padding: 1rem;
     border-top: 1px solid $gray-600;
 }
@@ -73,31 +73,43 @@ const exitLogin = (): void => authorizationStore.logout();
 
 .rooms {
     position: relative;
-    height: 100%;
+    height: 25%;
+    display: flex;
+    align-items: center;
 
     &:before {
         content: 'комнаты';
         position: absolute;
-        top: -1.5rem;
+        top: 0;
         right: 0;
         z-index: 112;
         font-size: 1.2rem;
         font-weight: 500;
     }
+
+    @include respond-to(md) {
+        height: 40%;
+    }
 }
 
 .exit {
     position: relative;
-    height: 100%;
+    height: 25%;
+    display: flex;
+    align-items: center;
 
     &:before {
         content: 'выйти';
         position: absolute;
-        top: -1.5rem;
+        top: 0;
         left: 0;
         z-index: 112;
         font-size: 1.2rem;
         font-weight: 500;
+    }
+
+    @include respond-to(md) {
+        height: 40%;
     }
 }
 
@@ -116,6 +128,7 @@ const exitLogin = (): void => authorizationStore.logout();
     align-items: center;
     justify-content: flex-start;
     width: 20%;
+    height: 20%;
     padding: 0.4rem 0.6rem;
     border: 2px solid $black-900;
     text-align: center;
@@ -123,6 +136,7 @@ const exitLogin = (): void => authorizationStore.logout();
     span {
         color: $black-900;
         margin-left: 1rem;
+        font-size: 2rem;
     }
 
     &:hover {
@@ -141,6 +155,22 @@ const exitLogin = (): void => authorizationStore.logout();
         .vertical {
             background-color: $white;
             transition: 0.7s;
+        }
+    }
+
+    @include respond-to(md) {
+        height: 30%;
+
+        span {
+            font-size: 1.4rem;
+        }
+    }
+
+    @include respond-to(sm) {
+        width: 30%;
+
+        span {
+            margin-left: 0;
         }
     }
 }

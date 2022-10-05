@@ -57,6 +57,15 @@ const emit = defineEmits<{
                 }}
             </span>
         </div>
+
+        <MqResponsive target="md">
+            <hr :class="$style.hr" />
+        </MqResponsive>
+
+        <MqResponsive target="md">
+            <hr :class="$style.hr" />
+        </MqResponsive>
+
         <button
             v-if="isMyRoom"
             :class="$style.deleteRoom"
@@ -105,11 +114,15 @@ const emit = defineEmits<{
     @include respond-to(md) {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
-        //justify-self: center;
-        //display: flex;
-        //flex-direction: column;
-        //align-items: center;
-        //justify-content: space-between;
+        margin-bottom: 2rem;
+        border: 0.2rem solid $gray-800;
+    }
+
+    @include respond-to(sm) {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
     }
 }
 
@@ -186,9 +199,20 @@ const emit = defineEmits<{
     //}
 }
 
+.hr {
+    background: $black-300;
+    height: 0.2rem;
+    border: none;
+}
+
 .deleteRoom {
+    width: 3rem;
+    height: 3rem;
     border: 0.1rem solid $black-200;
     transition: all 0.5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &:hover {
         background-color: $black-100;
