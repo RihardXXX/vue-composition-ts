@@ -2,8 +2,10 @@
 import VButton from '@/components/ui/VButton.vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 import PersonLogo from '@/components/PersonLogo.vue';
+import ModalRoomCreate from '@/components/modals/ModalRoomCreate.vue';
 import avatar1 from '@/assets/images/avatar1.png';
 import { useAuthorizationStore } from '@/store/authorization';
+import { ref } from 'vue';
 // import { toRefs } from 'vue'
 
 // подключаемся к сторе и получаем состояние авторизации
@@ -11,7 +13,10 @@ const authorizationStore = useAuthorizationStore();
 
 const { isInvited, username } = authorizationStore;
 
-const createRoom = (): void => console.log('createModal');
+const open = ref<boolean>(false);
+
+const createRoom = (): boolean => (open.value = true);
+const closeModal = (): boolean => (open.value = false);
 const openModalInvites = (): void => console.log('openModalInvites');
 const selectRooms = (): void => console.log('selectRooms');
 const exitLogin = (): void => authorizationStore.logout();
@@ -45,6 +50,9 @@ const exitLogin = (): void => authorizationStore.logout();
         <div :class="$style.exit" @click="exitLogin">
             <SvgIcon name="exit" :class="$style.exitIcon" />
         </div>
+        <teleport to="body">
+            <ModalRoomCreate :open="open" @close="closeModal" />
+        </teleport>
     </header>
 </template>
 

@@ -1,10 +1,57 @@
 <script lang="ts" setup>
 import RoomItem from '@/components/RoomItem.vue';
 import VErrorList from '@/components/ui/VErrorList.vue';
+import VInputSend from '@/components/ui/VInputSend.vue';
+import SvgIcon from '@/components/ui/SvgIcon.vue';
+import VToggleButton from '@/components/ui/VToggleButton.vue';
+import { computed, reactive, toRefs, withDefaults } from 'vue';
+import { useAuthorizationStore } from '@/store/authorization';
+import { useRoomsStore } from '@/store/rooms';
+import { Room } from '@/types/store/room';
+
+// создаваемая комната тип для отправки на сервер
+interface CreateRoomType {
+    private: boolean;
+    roomName: string;
+}
+const room = reactive<CreateRoomType>({
+    private: false,
+    roomName: '',
+});
+
+const errors = reactive<Array<string>>([]);
+
+const { user } = useAuthorizationStore();
+const { myRooms } = toRefs(useRoomsStore());
+
+const description = computed<string>(() => {
+    if (user) {
+        return user.roomCount > 0
+            ? `Вы можете создать не более ${user.roomCount} комнат`
+            : 'Вы не можете создать более 5 комнат';
+    }
+    return '';
+});
+
+interface Props {
+    open?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+    open: false,
+});
+const { open } = toRefs(props);
+
+const emit = defineEmits<{
+    (e: 'close'): void;
+}>();
+
+const createNewRoom = (): void => console.log('createNewRoom');
+const deleteRoom = (myRoom: Room): void => console.log('deleteRoom', myRoom);
+const toInvite = (myRoom: Room): void => console.log('createNewRoom', myRoom);
 </script>
 
 <template>
-    <div :class="$style.container">
+    <div v-if="open" :class="$style.container">
         <h3 :class="$style.title">Создать комнату</h3>
 
         <p :class="$style.description">
@@ -20,8 +67,8 @@ import VErrorList from '@/components/ui/VErrorList.vue';
                 :is-private="myRoom.author === user._id && myRoom.private"
                 :count-user="myRoom.users.length"
                 disabled
-                @deleteRoom="() => deleteRoom(myRoom)"
-                @toInvite="() => toInvite(myRoom)"
+                @delete-room="() => deleteRoom(myRoom)"
+                @to-invite="() => toInvite(myRoom)"
             />
         </ul>
 
@@ -38,19 +85,19 @@ import VErrorList from '@/components/ui/VErrorList.vue';
                 icon-name="send"
                 :style="{ width: '50%' }"
                 @input="(event) => (room.roomName = event.target.value.trim())"
-                @keyup.enter.native="createNewRoom"
+                @keyup.enter="createNewRoom"
                 @click="createNewRoom"
             />
             <VToggleButton
                 :active="room.private"
                 first-name="публичная"
                 last-name="приватная"
-                @clickFirst="room.private = false"
-                @clickLast="room.private = true"
+                @click-first="room.private = false"
+                @click-last="room.private = true"
             />
         </div>
-        <button :class="$style.buttonClose" @click="$emit('close')">
-            <svg-icon name="close" :class="$style.closeIcon" />
+        <button :class="$style.buttonClose" @click="emit('close')">
+            <SvgIcon name="close" :class="$style.closeIcon" />
         </button>
     </div>
 </template>
@@ -75,6 +122,7 @@ import VErrorList from '@/components/ui/VErrorList.vue';
     display: block;
     width: 90%;
     height: auto;
+    z-index: 1111;
     padding: $offset * 4 $offset * 6;
     border-radius: 1rem 1rem 0 0;
     background-color: $gray-700;

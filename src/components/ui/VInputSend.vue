@@ -1,4 +1,27 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { withDefaults, defineEmits, toRefs } from 'vue';
+import SvgIcon from '@/components/ui/SvgIcon.vue';
+
+interface Props {
+    value?: string;
+    iconName?: string;
+    label?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    value: '',
+    iconName: '',
+    label: '',
+});
+
+const { value, iconName, label } = toRefs(props);
+
+const emit = defineEmits<{
+    (e: 'input', event: Event): void;
+    (e: 'keyup.enter'): void;
+    (e: 'click');
+}>();
+</script>
 
 <template>
     <div :class="$style.sendSection">
@@ -9,11 +32,11 @@
             ref="input"
             :value="value"
             :class="$style.inputMessage"
-            @input="$emit('input', $event)"
-            @keyup.enter="$emit('keyup.enter')"
+            @input="emit('input', $event)"
+            @keyup.enter="emit('keyup.enter')"
         />
-        <div :class="$style.sendMessage" @click="$emit('click')">
-            <svg-icon :name="iconName" :class="$style.sendIcon" />
+        <div :class="$style.sendMessage" @click="emit('click')">
+            <SvgIcon :name="iconName" :class="$style.sendIcon" />
         </div>
     </div>
 </template>
