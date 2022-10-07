@@ -46,7 +46,7 @@ const emit = defineEmits<{
     position: relative;
     display: flex;
     align-items: center;
-    margin: 0.5rem;
+    margin: 1rem;
     padding: 0.2rem 0.5rem;
     border-radius: 0.5rem;
     background-color: $white;
@@ -62,9 +62,9 @@ const emit = defineEmits<{
 }
 
 .inputMessage {
-    width: 100%;
+    width: 90%;
     border: none;
-    font-size: 1.4rem;
+    font-size: 2rem;
 
     &:focus {
         outline-style: none;
@@ -76,6 +76,8 @@ const emit = defineEmits<{
     top: 0;
     right: 0;
     z-index: 222;
+    width: 4rem;
+    height: 4rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -83,8 +85,8 @@ const emit = defineEmits<{
 }
 
 .sendIcon {
-    width: 2rem;
-    height: 2rem;
+    width: 3rem;
+    height: 3rem;
     cursor: pointer;
     fill: $black-600;
 }
