@@ -21,10 +21,12 @@ const room = reactive<CreateRoomType>({
     roomName: '',
 });
 
-const errors = ref<Array<string>>([]);
+// const errors = ref<Array<string>>([]);
 
 const { user } = toRefs(useAuthorizationStore());
-const { myRooms } = toRefs(useRoomsStore());
+const { myRooms, errors } = toRefs(useRoomsStore());
+// функции для работы с ошибками
+const { addError, deleteError } = useRoomsStore();
 
 const description = computed<string>(() => {
     if (user.value) {
@@ -53,9 +55,14 @@ import { socketEventsServer } from '@/types/socket/socketEvents';
 const { socket } = useSocketIO();
 
 const createNewRoom = (): void => {
-    errors.value = [];
+    deleteError();
     if (!room.roomName) {
-        errors.value.push('имя комнаты не может быть пустым');
+        addError('имя комнаты не может быть пустым');
+        return;
+    }
+
+    if (room.roomName.length > 30) {
+        addError('имя комнаты не может быть больше 30 символов');
         return;
     }
 
@@ -116,7 +123,7 @@ const toInvite = (myRoom: Room): void => console.log('toInvite', myRoom);
                     :value="room.roomName"
                     label="имя комнаты"
                     icon-name="send"
-                    :style="{ width: '50%' }"
+                    :class="$style.inputSend"
                     @input="
                         (event) => (room.roomName = event.target.value.trim())
                     "
@@ -158,7 +165,7 @@ const toInvite = (myRoom: Room): void => console.log('toInvite', myRoom);
 }
 
 .description {
-    margin-top: $offset * 3;
+    margin: 1rem 0 1rem 0;
     text-align: center;
     font-size: 1.6rem;
 }
@@ -176,12 +183,25 @@ const toInvite = (myRoom: Room): void => console.log('toInvite', myRoom);
     border-radius: 1rem 1rem 0 0;
     background-color: $gray-700;
     box-shadow: 0 8px 24px rgba($black-400, 0.1);
+
+    @include respond-to(md) {
+        width: 100%;
+    }
+
+    @include respond-to(sm) {
+        height: 100%;
+    }
 }
 
 .settingSection {
     height: 6rem;
     display: flex;
     justify-content: flex-start;
+
+    @include respond-to(sm) {
+        flex-direction: column;
+        margin-top: 3rem;
+    }
 }
 
 .buttonClose {
@@ -252,6 +272,17 @@ const toInvite = (myRoom: Room): void => console.log('toInvite', myRoom);
     height: 55%;
     margin: 1rem 4rem;
     list-style: none;
+
+    @include respond-to(md) {
+        max-height: 50vh;
+        padding: 2rem;
+        border: 1px solid $black-600;
+    }
+
+    @include respond-to(sm) {
+        max-height: 60vh;
+        margin: 0;
+    }
 }
 
 .closeIcon {
@@ -263,5 +294,17 @@ const toInvite = (myRoom: Room): void => console.log('toInvite', myRoom);
 .containerError {
     width: auto;
     margin: 1rem 4rem;
+}
+
+.inputSend {
+    width: 50%;
+
+    @include respond-to(sm) {
+        width: 100%;
+
+        input {
+            height: 4rem;
+        }
+    }
 }
 </style>

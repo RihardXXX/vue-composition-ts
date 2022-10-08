@@ -4,11 +4,16 @@ import { User } from '@/types/store/user';
 import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';
 import { urlAuth } from '@/api/urls/urlAuthorization';
 import { AxiosResponse } from 'axios';
+import { useSocketIO } from '@/api/socketio/socket-io-client';
+import { socketEventsClient } from '@/types/socket/socketEvents';
 
 export const useAuthorizationStore = defineStore('authorization', () => {
     // пути для запросов и аксиос
     const urls = inject<AuthorizationUrlTypes>(urlAuth);
     const axios = inject<any>('axios');
+
+    // объект работы с сокетами
+    const { socket } = useSocketIO();
 
     // ===== Это состояние =====
     // массив пользователей
@@ -72,6 +77,16 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         isLoggedIn.value = false;
         token.value = '';
     }
+
+    // автоматическое обновление состояния данных у текущего пользователя
+    (function updateUserClient() {
+        socket.on(
+            socketEventsClient.updateUserClient,
+            (updateUser: User): void => {
+                user.value = updateUser;
+            }
+        );
+    })();
 
     // ===== Это геттеры =====
     const status = computed<boolean>(() => isLoggedIn.value);

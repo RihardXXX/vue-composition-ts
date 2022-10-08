@@ -37,6 +37,22 @@ export const useRoomsStore = defineStore('rooms', () => {
         );
     })();
 
+    // инициализация ошибок с сервера при работе с комнатами
+    (function setError(): void {
+        socket.on(socketEventsClient.setError, (arr: Array<string>): void => {
+            errors.value = arr;
+        });
+    })();
+
+    // добавление ошибок с компонента
+    function addError(message: string): void {
+        errors.value.push(message);
+    }
+    // удаление ошибок всех интерфейс с компонента
+    function deleteError() {
+        errors.value = [];
+    }
+
     // геттеры
     // const allRooms = computed<Array<Room>>(() => rooms.value);
     // const allMyRooms = computed<Array<Room>>(() => myRooms.value);
@@ -46,6 +62,8 @@ export const useRoomsStore = defineStore('rooms', () => {
         currentRoom,
         errors,
         myRooms,
+        addError,
+        deleteError,
         // allRooms,
         // allMyRooms,
     };
