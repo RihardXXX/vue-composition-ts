@@ -4,12 +4,13 @@ import VErrorList from '@/components/ui/VErrorList.vue';
 import VInputSend from '@/components/ui/VInputSend.vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 import VToggleButton from '@/components/ui/VToggleButton.vue';
-import { computed, reactive, toRefs, withDefaults, ref } from 'vue';
+import { computed, reactive, toRefs } from 'vue';
 import { useAuthorizationStore } from '@/store/authorization';
 import { useRoomsStore } from '@/store/rooms';
 import { Room } from '@/types/store/room';
 import { User } from '@/types/store/user';
 import { useSocketIO } from '@/api/socketio/socket-io-client';
+import ModalOverlayWrapper from '@/components/modals/ModalOverlayWrapper.vue';
 
 // создаваемая комната тип для отправки на сервер
 interface CreateRoomType {
@@ -36,14 +37,6 @@ const description = computed<string>(() => {
     }
     return '';
 });
-
-interface Props {
-    open?: boolean;
-}
-const props = withDefaults(defineProps<Props>(), {
-    open: false,
-});
-const { open } = toRefs(props);
 
 const emit = defineEmits<{
     (e: 'close'): void;
@@ -90,7 +83,7 @@ const toInvite = (myRoom: Room): void => console.log('toInvite', myRoom);
 </script>
 
 <template>
-    <div v-show="open" :class="$style.overlay">
+    <ModalOverlayWrapper>
         <div :class="$style.container">
             <h3 :class="$style.title">Создать комнату</h3>
 
@@ -142,21 +135,10 @@ const toInvite = (myRoom: Room): void => console.log('toInvite', myRoom);
                 <SvgIcon name="close" :class="$style.closeIcon" />
             </button>
         </div>
-    </div>
+    </ModalOverlayWrapper>
 </template>
 
 <style lang="scss" module>
-.overlay {
-    z-index: 1111;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
 .title {
     padding-bottom: 1rem;
     border-bottom: 1px solid $gray-600;

@@ -8,21 +8,32 @@ import { User } from '@/types/store/user';
 import { socketEventsServer } from '@/types/socket/socketEvents';
 import { Room } from '@/types/store/room';
 import RoomItem from '@/components/RoomItem.vue';
+import { useRouter } from 'vue-router';
 
 // получаем реактивное состояние всех комнат и только комнат пользователя
 const { rooms, myRooms } = toRefs(useRoomsStore());
+const { setCurrentRoom } = useRoomsStore();
 // получаем данные о текущем пользователе
 const { user: currentUser } = useAuthorizationStore();
 // объект сокета для получения данных от сервера
 const { socket } = useSocketIO();
+// роутер объект для перехода
+const router = useRouter();
+
+console.log('router', router);
 
 onMounted(() => {
     // инициализация комнат
     socket.emit(socketEventsServer.initialRooms, { user: currentUser as User });
 });
 
-// функции по работе с комнатами
-const nextRoom = (room: Room): void => console.log('nextRoom', room);
+// функции для перехода в конкретную комнату
+const nextRoom = (room: Room): void => {
+    // console.log(room);
+    setCurrentRoom(room);
+    router.push({ name: 'current-room', params: { id: room._id } });
+};
+
 const deleteRoom = (room: Room): void => console.log('deleteRoom', room);
 const toInvite = (room: Room): void => console.log('toInvite', room);
 </script>

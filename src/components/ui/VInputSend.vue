@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { withDefaults, defineEmits, toRefs } from 'vue';
+import { withDefaults, toRefs } from 'vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 
 interface Props {

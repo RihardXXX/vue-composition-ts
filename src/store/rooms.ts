@@ -3,6 +3,8 @@ import { ref, computed } from 'vue';
 import { socketEventsClient } from '@/types/socket/socketEvents';
 import { useSocketIO } from '@/api/socketio/socket-io-client';
 import { Room } from '@/types/store/room';
+import { Message } from '@/types/store/message';
+import { User } from '@/types/store/user';
 
 export const useRoomsStore = defineStore('rooms', () => {
     // объект работы с сокетами
@@ -37,6 +39,16 @@ export const useRoomsStore = defineStore('rooms', () => {
         );
     })();
 
+    // обновляем на клиенте текущую комнату
+    (function updateCurrentRoom(): void {
+        socket.on(
+            socketEventsClient.updateCurrentRoom,
+            (updateCurrentRoom: Room): void => {
+                currentRoom.value = updateCurrentRoom;
+            }
+        );
+    })();
+
     // инициализация ошибок с сервера при работе с комнатами
     (function setError(): void {
         socket.on(socketEventsClient.setError, (arr: Array<string>): void => {
@@ -53,9 +65,20 @@ export const useRoomsStore = defineStore('rooms', () => {
         errors.value = [];
     }
 
+    // установка текущей комнаты
+    function setCurrentRoom(room: Room): void {
+        currentRoom.value = room;
+    }
+
     // геттеры
     // const allRooms = computed<Array<Room>>(() => rooms.value);
     // const allMyRooms = computed<Array<Room>>(() => myRooms.value);
+    const messagesCurrentRoom = computed<Array<Message> | []>(() => {
+        return currentRoom.value?.messages || [];
+    });
+    const usersCurrentRoom = computed<Array<User> | []>(() => {
+        return currentRoom.value?.users || [];
+    });
 
     return {
         rooms,
@@ -64,6 +87,9 @@ export const useRoomsStore = defineStore('rooms', () => {
         myRooms,
         addError,
         deleteError,
+        setCurrentRoom,
+        messagesCurrentRoom,
+        usersCurrentRoom,
         // allRooms,
         // allMyRooms,
     };

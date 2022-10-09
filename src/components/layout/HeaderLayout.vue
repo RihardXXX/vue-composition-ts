@@ -6,19 +6,43 @@ import ModalRoomCreate from '@/components/modals/ModalRoomCreate.vue';
 import avatar1 from '@/assets/images/avatar1.png';
 import { useAuthorizationStore } from '@/store/authorization';
 import { ref } from 'vue';
-// import { toRefs } from 'vue'
+import { useSocketIO } from '@/api/socketio/socket-io-client';
+import { socketEventsServer } from '@/types/socket/socketEvents';
+import { toRefs } from 'vue';
+import { useRoomsStore } from '@/store/rooms';
+import { User } from '@/types/store/user';
+import { Room } from '@/types/store/room';
+import { useRouter } from 'vue-router';
 
 // подключаемся к сторе и получаем состояние авторизации
 const authorizationStore = useAuthorizationStore();
+const roomsStore = useRoomsStore();
+const { socket } = useSocketIO();
+const router = useRouter();
 
-const { isInvited, username } = authorizationStore;
+const { isInvited, username, user } = toRefs(authorizationStore);
+const { currentRoom } = toRefs(roomsStore);
 
 const open = ref<boolean>(false);
 
 const createRoom = (): boolean => (open.value = true);
 const closeModal = (): boolean => (open.value = false);
 const openModalInvites = (): void => console.log('openModalInvites');
-const selectRooms = (): void => console.log('selectRooms');
+const selectRooms = (): void => {
+    // выходим из текущей комнаты
+    // когда пользователь выходит сообщаем остальным что пользователь вышел
+    socket.emit(socketEventsServer.exitRoom, {
+        user: user.value,
+        room: currentRoom.value,
+    } as {
+        user: User;
+        room: Room;
+    });
+
+    router.push({
+        name: 'room-list',
+    });
+};
 const exitLogin = (): void => authorizationStore.logout();
 </script>
 
