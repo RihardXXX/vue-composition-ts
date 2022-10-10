@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router'
 import StartLoadingPage from '@/components/StartLoadingPage.vue';
 import { useAuthorizationStore } from '@/store/authorization';
 import HeaderLayout from '@/components/layout/HeaderLayout.vue';
@@ -8,6 +8,7 @@ import HeaderLayout from '@/components/layout/HeaderLayout.vue';
 // подключаемся к сторе и получаем состояние авторизации
 const authorizationStore = useAuthorizationStore();
 const router = useRouter();
+const route = useRoute();
 
 // переменные шага и статуса авторизации
 const step = ref<number>(1);
@@ -16,6 +17,7 @@ const step = ref<number>(1);
 const changeRoute = (status: boolean): void => {
     // console.log('status: ', status);
     if (status) {
+        // console.log(route);
         router.push({ name: 'room-list' });
     } else {
         router.push({ name: 'welcome' });

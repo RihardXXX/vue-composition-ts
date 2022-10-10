@@ -111,7 +111,7 @@ const toInvite = (myRoom: Room): void => console.log('toInvite', myRoom);
                 :class-container="$style.containerError"
             />
 
-            <div v-if="user.roomCount > 0" :class="$style.settingSection">
+            <div v-if="user?.roomCount > 0" :class="$style.settingSection">
                 <VInputSend
                     :value="room.roomName"
                     label="имя комнаты"

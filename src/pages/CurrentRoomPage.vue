@@ -3,9 +3,9 @@ import SvgIcon from '@/components/ui/SvgIcon.vue';
 import UserOrRoomItem from '@/components/UserOrRoomItem.vue';
 import VInputSend from '@/components/ui/VInputSend.vue';
 import { Room } from '@/types/store/room';
-import { onMounted, toRefs, ref } from 'vue';
+import { onMounted, toRefs, ref, onUnmounted } from 'vue';
 import { useSocketIO } from '@/api/socketio/socket-io-client';
-import { socketEventsServer } from '@/types/socket/socketEvents';
+import { socketEventsServer } from '@/types/socket/socketEvents'
 import { useAuthorizationStore } from '@/store/authorization';
 import { useRoomsStore } from '@/store/rooms';
 import { User } from '@/types/store/user';
@@ -26,10 +26,17 @@ onMounted(() => {
     socket.emit(socketEventsServer.joinedRooms, {
         user: user.value,
         room: currentRoom.value,
-    } as {
-        user: User;
-        room: Room;
     });
+});
+
+onUnmounted(() => {
+    console.log('onUnmounted');
+    // выходим из текущей комнаты
+    // когда пользователь выходит сообщаем остальным что пользователь вышел
+    socket.emit(socketEventsServer.exitRoom, {
+        user: user.value,
+        room: currentRoom.value,
+    })
 });
 
 // отправить сообщение в текущую комнату
@@ -45,6 +52,9 @@ const setName = (): void => console.log('setName');
 
 <template>
     <div :class="$style.IndexPage">
+<!--        <pre>-->
+<!--            {{ currentRoom.users }}-->
+<!--        </pre>-->
         <div :class="$style.container">
             <button :class="$style.UpDown" @click="upOrDownList">
                 <SvgIcon

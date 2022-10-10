@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
-    {
-        path: '/',
-        name: 'app',
-        component: () => import('@/App.vue'),
-    },
+    // {
+    //     path: '/',
+    //     name: 'app',
+    //     component: () => import('@/App.vue'),
+    // },
     {
         path: '/welcome',
         name: 'welcome',
@@ -17,7 +17,7 @@ const routes = [
         component: () => import('@/pages/RoomListPage.vue'),
     },
     {
-        path: '/current-room/:id',
+        path: '/current-room',
         name: 'current-room',
         component: () => import('@/pages/CurrentRoomPage.vue'),
     },

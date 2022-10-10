@@ -20,7 +20,7 @@ const { socket } = useSocketIO();
 // роутер объект для перехода
 const router = useRouter();
 
-console.log('router', router);
+// console.log('router', router);
 
 onMounted(() => {
     // инициализация комнат
@@ -31,7 +31,7 @@ onMounted(() => {
 const nextRoom = (room: Room): void => {
     // console.log(room);
     setCurrentRoom(room);
-    router.push({ name: 'current-room', params: { id: room._id } });
+    router.push({ name: 'current-room'});
 };
 
 const deleteRoom = (room: Room): void => console.log('deleteRoom', room);
