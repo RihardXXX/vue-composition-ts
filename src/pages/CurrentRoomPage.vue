@@ -4,19 +4,18 @@ import UserOrRoomItem from '@/components/UserOrRoomItem.vue';
 import VInputSend from '@/components/ui/VInputSend.vue';
 import { Room } from '@/types/store/room';
 import { onMounted, toRefs, ref, onUnmounted } from 'vue';
-import { useSocketIO } from '@/api/socketio/socket-io-client';
-import { socketEventsServer } from '@/types/socket/socketEvents'
+import { socketEventsServer } from '@/types/socket/socketEvents';
 import { useAuthorizationStore } from '@/store/authorization';
 import { useRoomsStore } from '@/store/rooms';
 import { User } from '@/types/store/user';
 
-// объект сокета
-const { socket } = useSocketIO();
 // глобальное состояние пользователя и комнат
 const { user } = toRefs(useAuthorizationStore());
 const { currentRoom, rooms, messagesCurrentRoom, usersCurrentRoom } = toRefs(
     useRoomsStore()
 );
+// объект сокета должен быть один чтобы по айди цеплялись события
+const { socket } = useRoomsStore();
 
 const text = ref<string>('');
 const up = ref<boolean>(false);
@@ -36,7 +35,7 @@ onUnmounted(() => {
     socket.emit(socketEventsServer.exitRoom, {
         user: user.value,
         room: currentRoom.value,
-    })
+    });
 });
 
 // отправить сообщение в текущую комнату
@@ -52,9 +51,9 @@ const setName = (): void => console.log('setName');
 
 <template>
     <div :class="$style.IndexPage">
-<!--        <pre>-->
-<!--            {{ currentRoom.users }}-->
-<!--        </pre>-->
+        <!--        <pre>-->
+        <!--            {{ currentRoom.users }}-->
+        <!--        </pre>-->
         <div :class="$style.container">
             <button :class="$style.UpDown" @click="upOrDownList">
                 <SvgIcon

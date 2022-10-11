@@ -91,6 +91,7 @@ export const useRoomsStore = defineStore('rooms', () => {
         setCurrentRoom,
         messagesCurrentRoom,
         usersCurrentRoom,
+        socket,
         // allRooms,
         // allMyRooms,
     };

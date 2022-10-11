@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router';
 import StartLoadingPage from '@/components/StartLoadingPage.vue';
 import { useAuthorizationStore } from '@/store/authorization';
 import HeaderLayout from '@/components/layout/HeaderLayout.vue';

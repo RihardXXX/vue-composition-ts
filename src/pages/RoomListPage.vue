@@ -31,7 +31,7 @@ onMounted(() => {
 const nextRoom = (room: Room): void => {
     // console.log(room);
     setCurrentRoom(room);
-    router.push({ name: 'current-room'});
+    router.push({ name: 'current-room' });
 };
 
 const deleteRoom = (room: Room): void => console.log('deleteRoom', room);
