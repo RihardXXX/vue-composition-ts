@@ -1,24 +1,41 @@
 <script lang="ts" setup>
-import SvgIcon from '@/components/ui/SvgIcon.vue';
+//компоненты
 import UserOrRoomItem from '@/components/UserOrRoomItem.vue';
 import VInputSend from '@/components/ui/VInputSend.vue';
+import VErrorList from '@/components/ui/VErrorList.vue';
+import SvgIcon from '@/components/ui/SvgIcon.vue';
+// интерфейсы
 import { Room } from '@/types/store/room';
-import { onMounted, toRefs, ref, onUnmounted } from 'vue';
+import { User } from '@/types/store/user';
 import { socketEventsServer } from '@/types/socket/socketEvents';
+// хуки и функции вью
+import { onMounted, toRefs, ref, onUnmounted, watch } from 'vue';
+// глобальное состояние Пиниа
 import { useAuthorizationStore } from '@/store/authorization';
 import { useRoomsStore } from '@/store/rooms';
-import { User } from '@/types/store/user';
 
 // глобальное состояние пользователя и комнат
 const { user } = toRefs(useAuthorizationStore());
-const { currentRoom, rooms, messagesCurrentRoom, usersCurrentRoom } = toRefs(
-    useRoomsStore()
-);
+const { currentRoom, rooms, messagesCurrentRoom, usersCurrentRoom, errors } =
+    toRefs(useRoomsStore());
 // объект сокета должен быть один чтобы по айди цеплялись события
-const { socket } = useRoomsStore();
+// реактивность не требуется
+const { socket, deleteError, addError } = useRoomsStore();
 
+// текст сообщения
 const text = ref<string>('');
-const up = ref<boolean>(false);
+// чтобы стирать ошибку отсутствие текста
+watch(
+    () => text.value,
+    (text: string): void => {
+        if (text.length) {
+            deleteError();
+        }
+    }
+);
+
+// ссылки на рефы сообщений
+const divMessages = ref([]);
 
 onMounted(() => {
     // отправляем пользователя и текущую комнату на сервер
@@ -26,34 +43,91 @@ onMounted(() => {
         user: user.value,
         room: currentRoom.value,
     });
+    deleteError();
 });
 
 onUnmounted(() => {
-    console.log('onUnmounted');
     // выходим из текущей комнаты
     // когда пользователь выходит сообщаем остальным что пользователь вышел
     socket.emit(socketEventsServer.exitRoom, {
         user: user.value,
         room: currentRoom.value,
+    } as {
+        user: User;
+        room: Room;
     });
 });
 
 // отправить сообщение в текущую комнату
-const sendMessage = (): void => console.log('sendMessage');
+const sendMessage = (): void => {
+    deleteError();
+    if (!text.value.length) {
+        addError('поле сообщения не может быть пустым');
+        return;
+    }
+    const currentUser = user.value;
+
+    socket.emit(socketEventsServer.createNewMessage, {
+        text: text.value,
+        room: currentRoom.value,
+        user: currentUser,
+    });
+
+    text.value = '';
+};
 // сменить комнату
 const changeRoom = (newRoom: Room): void =>
     console.log('change room on: ', newRoom);
 
-const upOrDownList = (): void => console.log('upOrDownList');
-
 const setName = (): void => console.log('setName');
+
+// вверх или вниз включен режим
+const up = ref<boolean>(false);
+// функция которая скроллит автоматически к определенному элементу
+const nextMessageScroll = (
+    _id: string,
+    duration: number,
+    divs: object
+): void => {
+    setTimeout(() => {
+        const element: HTMLElement = divs[_id];
+        element?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, duration);
+};
+
+// поднимаемся по сообщениям и спускаемся плавно
+// если спустились то включаем авто спуск для новых сообщений
+const upOrDownList = (): void => {
+    // перемещаем стрелку, отключаем автоскролл вниз
+    up.value = !up.value;
+    // скроллим плавно к верхнем элементу если включен режим вверх
+    if (messagesCurrentRoom.value.length && up.value) {
+        // скроллим к первому верхнему элементу
+        const _id = messagesCurrentRoom.value[0]._id;
+        nextMessageScroll(_id, 1000, divMessages.value);
+    } else {
+        // включаем режим авто скролла и скроллим к последнему элементу
+        const _id =
+            messagesCurrentRoom.value[messagesCurrentRoom.value.length - 1]._id;
+        nextMessageScroll(_id, 1000, divMessages.value);
+    }
+};
+
+// тут следим за списком и у определенного списка докручиваем скролл
+watch(
+    () => messagesCurrentRoom.value,
+    (messages) => {
+        if (messages.length && !up.value) {
+            // тут будем делать скрол как получим ответ от сервера
+            const _id = messages[messages.length - 1]._id;
+            nextMessageScroll(_id, 1500, divMessages.value);
+        }
+    }
+);
 </script>
 
 <template>
     <div :class="$style.IndexPage">
-        <!--        <pre>-->
-        <!--            {{ currentRoom.users }}-->
-        <!--        </pre>-->
         <div :class="$style.container">
             <button :class="$style.UpDown" @click="upOrDownList">
                 <SvgIcon
@@ -66,7 +140,14 @@ const setName = (): void => console.log('setName');
                     ]"
                 />
             </button>
-            <div :class="$style.chatWindow">
+            <div
+                :class="[
+                    $style.chatWindow,
+                    {
+                        [$style.errorMessage]: errors.length,
+                    },
+                ]"
+            >
                 <div :class="$style.chatRooms">
                     <h3 :class="$style.titleRoom">Комнаты:</h3>
                     <UserOrRoomItem
@@ -81,7 +162,7 @@ const setName = (): void => console.log('setName');
                     <div
                         v-for="message in messagesCurrentRoom"
                         :key="message._id"
-                        :ref="message._id"
+                        :ref="(el) => (divMessages[message._id] = el)"
                         :class="[
                             $style.itemContainer,
                             {
@@ -90,10 +171,6 @@ const setName = (): void => console.log('setName');
                         ]"
                     >
                         <div
-                            v-tooltip.bottom-end="{
-                                content: 'написать этому пользователю',
-                                // delay: { show: 200, hide: 100 },
-                            }"
                             :class="$style.item"
                             @click="() => setName(message)"
                         >
@@ -117,12 +194,17 @@ const setName = (): void => console.log('setName');
             </div>
             <div :class="$style.inputSection">
                 <VInputSend
-                    ref="usernameInput"
                     :value="text"
+                    label="текст для сообщение записывайте сюда"
                     icon-name="send"
+                    :class="$style.inputSend"
                     @input="(event) => (text = event.target.value.trim())"
                     @keyup.enter="sendMessage"
                     @click="sendMessage"
+                />
+                <VErrorList
+                    :error-list="errors"
+                    :class-container="$style.errorList"
                 />
             </div>
         </div>
@@ -147,7 +229,12 @@ const setName = (): void => console.log('setName');
     overflow: auto;
     display: flex;
     width: 100%;
-    height: 90%;
+    height: 92%;
+    margin-bottom: 2rem;
+}
+
+.errorMessage {
+    height: 85%;
 }
 
 .chatRooms {
@@ -275,7 +362,21 @@ const setName = (): void => console.log('setName');
 .inputSection {
     position: relative;
     width: 100%;
-    height: 10%;
+    //height: 10%;
+}
+
+.inputSend {
+    min-height: 4rem;
+
+    .inputMessage {
+        min-width: 98%;
+    }
+}
+
+.errorList {
+    margin: 0 1rem;
+    max-width: 25%;
+    text-align: center;
 }
 
 .run {

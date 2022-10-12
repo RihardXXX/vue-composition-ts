@@ -9,7 +9,6 @@ import VueAxios from 'vue-axios';
 import axiosApp from '@/api/axios/axios';
 import { urlAuthorization, urlAuth } from '@/api/urls/urlAuthorization';
 import { Vue3Mq, MqResponsive } from 'vue3-mq';
-import VTooltip from 'v-tooltip';
 
 // инициализируем ананас
 const pinia = createPinia();
@@ -43,10 +42,6 @@ app.use(Vue3Mq, {
 // глобальная регистрация компонента
 app.component('MqResponsive', MqResponsive);
 // подключаем тултип
-app.use(VTooltip, {
-    defaultHtml: false,
-});
-app.directive('tooltip', VTooltip.VTooltip);
 // монтируем приложение в див
 app.mount('#app');
 

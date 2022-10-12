@@ -44,7 +44,7 @@ export const useRoomsStore = defineStore('rooms', () => {
         socket.on(
             socketEventsClient.updateCurrentRoom,
             (updateCurrentRoom: Room): void => {
-                console.log('updateCurrentRoom: ', updateCurrentRoom);
+                // console.log('updateCurrentRoom: ', updateCurrentRoom);
                 currentRoom.value = updateCurrentRoom;
             }
         );

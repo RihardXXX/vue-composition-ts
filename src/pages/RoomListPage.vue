@@ -16,7 +16,7 @@ const { setCurrentRoom } = useRoomsStore();
 // получаем данные о текущем пользователе
 const { user: currentUser } = useAuthorizationStore();
 // объект сокета для получения данных от сервера
-const { socket } = useSocketIO();
+const { socket } = useRoomsStore();
 // роутер объект для перехода
 const router = useRouter();
 
