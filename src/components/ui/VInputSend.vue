@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { withDefaults, toRefs } from 'vue';
+import { withDefaults, toRefs, ref, watch, onMounted } from 'vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 
 interface Props {
@@ -20,7 +20,15 @@ const emit = defineEmits<{
     (e: 'input', event: Event): void;
     (e: 'keyup.enter'): void;
     (e: 'click');
+    (e: 'setInput', event: HTMLElement | null);
 }>();
+
+// ссылка на инпут
+const input = ref(null);
+onMounted(() => {
+    // к родителю бросаем елемент для фокусировки
+    emit('setInput', input.value);
+});
 </script>
 
 <template>

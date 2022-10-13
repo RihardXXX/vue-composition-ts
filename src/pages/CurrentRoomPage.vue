@@ -13,6 +13,7 @@ import { onMounted, toRefs, ref, onUnmounted, watch } from 'vue';
 // глобальное состояние Пиниа
 import { useAuthorizationStore } from '@/store/authorization';
 import { useRoomsStore } from '@/store/rooms';
+import { Message } from '@/types/store/message';
 
 // глобальное состояние пользователя и комнат
 const { user } = toRefs(useAuthorizationStore());
@@ -36,7 +37,6 @@ watch(
 
 // ссылки на рефы сообщений
 const divMessages = ref([]);
-
 onMounted(() => {
     // отправляем пользователя и текущую комнату на сервер
     socket.emit(socketEventsServer.joinedRooms, {
@@ -79,7 +79,18 @@ const sendMessage = (): void => {
 const changeRoom = (newRoom: Room): void =>
     console.log('change room on: ', newRoom);
 
-const setName = (): void => console.log('setName');
+// установка ссылки и получение дочернего компонента
+const inputElement = ref();
+const setInput = (element: HTMLElement): void => {
+    inputElement.value = element;
+};
+
+// кому мы хотим обратится в чате
+const setName = (message: Message): void => {
+    const { username } = message.user;
+    text.value = `@${username} `;
+    inputElement.value.focus();
+};
 
 // вверх или вниз включен режим
 const up = ref<boolean>(false);
@@ -201,6 +212,7 @@ watch(
                     @input="(event) => (text = event.target.value.trim())"
                     @keyup.enter="sendMessage"
                     @click="sendMessage"
+                    @setInput="setInput"
                 />
                 <VErrorList
                     :error-list="errors"
