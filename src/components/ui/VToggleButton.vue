@@ -8,10 +8,12 @@ interface Props {
     lastName: string;
     active: boolean;
     icon?: boolean;
+    classForm?: Array<string> | string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     icon: true,
+    classForm: '',
 });
 const { firstName, lastName, active, icon } = toRefs(props);
 
@@ -23,7 +25,7 @@ const emit = defineEmits<{
 
 <template>
     <div :class="$style.containerButton">
-        <form :class="$style.typeRoom" @submit.prevent.stop="">
+        <form :class="[$style.typeRoom, classForm]" @submit.prevent.stop="">
             <VButton
                 :name="firstName"
                 :class="[

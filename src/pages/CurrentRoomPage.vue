@@ -3,6 +3,7 @@
 import UserOrRoomItem from '@/components/UserOrRoomItem.vue';
 import VInputSend from '@/components/ui/VInputSend.vue';
 import VErrorList from '@/components/ui/VErrorList.vue';
+import VToggleButton from '@/components/ui/VToggleButton.vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 // интерфейсы
 import { Room } from '@/types/store/room';
@@ -21,10 +22,14 @@ const { currentRoom, rooms, messagesCurrentRoom, usersCurrentRoom, errors } =
     toRefs(useRoomsStore());
 // объект сокета должен быть один чтобы по айди цеплялись события
 // реактивность не требуется
-const { socket, deleteError, addError } = useRoomsStore();
+const { socket, deleteError, addError, setCurrentRoom } = useRoomsStore();
 
 // текст сообщения
 const text = ref<string>('');
+
+// для мобильной версии показывать комнаты или пользователей
+const roomsOrUsers = ref<boolean>(false);
+
 // чтобы стирать ошибку отсутствие текста
 watch(
     () => text.value,
@@ -38,6 +43,7 @@ watch(
 // ссылки на рефы сообщений
 const divMessages = ref([]);
 onMounted(() => {
+    // console.log('onMounted');
     // отправляем пользователя и текущую комнату на сервер
     socket.emit(socketEventsServer.joinedRooms, {
         user: user.value,
@@ -52,9 +58,11 @@ onUnmounted(() => {
     socket.emit(socketEventsServer.exitRoom, {
         user: user.value,
         room: currentRoom.value,
+        changeRoom: false,
     } as {
         user: User;
         room: Room;
+        changeRoom: boolean;
     });
 });
 
@@ -75,9 +83,28 @@ const sendMessage = (): void => {
 
     text.value = '';
 };
+
 // сменить комнату
-const changeRoom = (newRoom: Room): void =>
-    console.log('change room on: ', newRoom);
+const changeRoom = (selectRoom: Room): void => {
+    // console.log('room: ', selectRoom._id);
+    // выходим из текущей комнаты
+    socket.emit(socketEventsServer.exitRoom, {
+        user: user.value,
+        room: currentRoom.value,
+        changeRoom: true,
+    } as {
+        user: User;
+        room: Room;
+        changeRoom: boolean;
+    });
+    // устанавливаем новую комнату
+    setCurrentRoom(selectRoom);
+    // подсоединяемся к выбранной комнате
+    socket.emit(socketEventsServer.joinedRooms, {
+        user: user.value,
+        room: selectRoom,
+    });
+};
 
 // установка ссылки и получение дочернего компонента
 const inputElement = ref();
@@ -159,7 +186,7 @@ watch(
                     },
                 ]"
             >
-                <div :class="$style.chatRooms">
+                <MqResponsive target="md+" :class="$style.chatRooms">
                     <h3 :class="$style.titleRoom">Комнаты:</h3>
                     <UserOrRoomItem
                         v-for="room in rooms"
@@ -168,7 +195,36 @@ watch(
                         :label="room.name"
                         @click="() => changeRoom(room)"
                     />
-                </div>
+                </MqResponsive>
+                <MqResponsive target="sm-" :class="$style.chatRooms">
+                    <VToggleButton
+                        :active="roomsOrUsers"
+                        first-name="комнаты"
+                        last-name="пользователи"
+                        :class-form="$style.classForm"
+                        :icon="false"
+                        @click-first="roomsOrUsers = false"
+                        @click-last="roomsOrUsers = true"
+                    />
+                    <template v-if="!roomsOrUsers">
+                        <h3 :class="$style.titleRoom">Комнаты:</h3>
+                        <UserOrRoomItem
+                            v-for="room in rooms"
+                            :key="room._id"
+                            :active="currentRoom._id === room._id"
+                            :label="room.name"
+                            @click="() => changeRoom(room)"
+                        />
+                    </template>
+                    <template v-else>
+                        <h3 :class="$style.titleRoom">пользователи:</h3>
+                        <UserOrRoomItem
+                            v-for="user in usersCurrentRoom"
+                            :key="user._id"
+                            :label="user.username"
+                        />
+                    </template>
+                </MqResponsive>
                 <div ref="chatContainer" :class="$style.chatContainer">
                     <div
                         v-for="message in messagesCurrentRoom"
@@ -194,14 +250,14 @@ watch(
                         </div>
                     </div>
                 </div>
-                <div :class="$style.userName">
+                <MqResponsive target="md+" :class="$style.userName">
                     <h3 :class="$style.titleRoom">пользователи:</h3>
                     <UserOrRoomItem
                         v-for="user in usersCurrentRoom"
                         :key="user._id"
                         :label="user.username"
                     />
-                </div>
+                </MqResponsive>
             </div>
             <div :class="$style.inputSection">
                 <VInputSend
@@ -212,7 +268,7 @@ watch(
                     @input="(event) => (text = event.target.value.trim())"
                     @keyup.enter="sendMessage"
                     @click="sendMessage"
-                    @setInput="setInput"
+                    @set-input="setInput"
                 />
                 <VErrorList
                     :error-list="errors"
@@ -243,10 +299,19 @@ watch(
     width: 100%;
     height: 92%;
     margin-bottom: 2rem;
+
+    @include respond-to(md) {
+        height: 86%;
+        margin-bottom: 4rem;
+    }
 }
 
 .errorMessage {
     height: 85%;
+
+    @include respond-to(md) {
+        height: 80%;
+    }
 }
 
 .chatRooms {
@@ -256,6 +321,14 @@ watch(
     height: 100%;
     border-right: 0.5px solid $gray-200;
     flex-direction: column;
+
+    @include respond-to(md) {
+        width: 20%;
+    }
+
+    @include respond-to(sm) {
+        width: 30%;
+    }
 }
 
 .userName {
@@ -265,6 +338,10 @@ watch(
     height: 100%;
     border-left: 0.5px solid $gray-200;
     flex-direction: column;
+
+    @include respond-to(md) {
+        width: 20%;
+    }
 }
 
 .titleRoom {
@@ -278,6 +355,14 @@ watch(
     width: 80%;
     height: 100%;
     flex-direction: column;
+
+    @include respond-to(md) {
+        width: 60%;
+    }
+
+    @include respond-to(sm) {
+        width: 70%;
+    }
 }
 
 .UpDown {
@@ -389,6 +474,11 @@ watch(
     margin: 0 1rem;
     max-width: 25%;
     text-align: center;
+
+    @include respond-to(md) {
+        margin: 0 1rem;
+        max-width: 80%;
+    }
 }
 
 .run {
@@ -428,5 +518,20 @@ watch(
     height: 2rem;
     cursor: pointer;
     fill: $black-600;
+}
+
+.classForm {
+    flex-direction: column;
+
+    button {
+        max-width: 12rem;
+        height: 4rem;
+        margin-left: .5rem;
+
+        &:last-child {
+            margin-left: .5rem;
+            margin-top: 1rem;
+        }
+    }
 }
 </style>

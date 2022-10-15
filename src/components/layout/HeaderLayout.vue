@@ -34,9 +34,11 @@ const selectRooms = (): void => {
     socket.emit(socketEventsServer.exitRoom, {
         user: user.value,
         room: currentRoom.value,
+        changeRoom: false,
     } as {
         user: User;
         room: Room;
+        changeRoom: boolean;
     });
 
     router.push({

@@ -39,7 +39,7 @@ const emit = defineEmits<{
     display: inline-block;
     align-items: flex-start;
     justify-content: flex-start;
-    width: 70%;
+    width: 90%;
     //min-height: 3rem;
     margin: 0.2rem 0.5rem;
     padding: 0.5rem;
@@ -50,6 +50,10 @@ const emit = defineEmits<{
     flex-direction: column;
     cursor: pointer;
 
+    @include respond-to(md) {
+        width: 90%;
+    }
+
     &._room {
         border: 0.5px solid $black-400;
         background-color: $gray-600;
@@ -58,6 +62,10 @@ const emit = defineEmits<{
 
         &:hover {
             background-color: $gray-400;
+
+            @include respond-to(md) {
+                background-color: $blue-100;
+            }
         }
     }
 
