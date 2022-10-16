@@ -15,7 +15,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div v-show="open" :class="$style.overlay">
+    <div v-if="open" :class="$style.overlay">
         <slot @close="emit('close')"></slot>
     </div>
 </template>

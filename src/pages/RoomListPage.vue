@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import SvgIcon from '@/components/ui/SvgIcon.vue';
-import { onMounted, toRefs } from 'vue';
+import { onMounted, ref, toRefs } from 'vue';
 import { useRoomsStore } from '@/store/rooms';
 import { useSocketIO } from '@/api/socketio/socket-io-client';
 import { useAuthorizationStore } from '@/store/authorization';
@@ -8,6 +8,7 @@ import { User } from '@/types/store/user';
 import { socketEventsServer } from '@/types/socket/socketEvents';
 import { Room } from '@/types/store/room';
 import RoomItem from '@/components/RoomItem.vue';
+import ModalInviteUser from '@/components/modals/ModalInviteUser.vue';
 import { useRouter } from 'vue-router';
 
 // получаем реактивное состояние всех комнат и только комнат пользователя
@@ -35,11 +36,28 @@ const nextRoom = (room: Room): void => {
 };
 
 const deleteRoom = (room: Room): void => console.log('deleteRoom', room);
-const toInvite = (room: Room): void => console.log('toInvite', room);
+
+// открытие окна для приглашения пользователей в приватную комнату
+const open = ref<boolean>(false);
+const closeModal = (): boolean => (open.value = false);
+
+// комната приглашения для модалки пропсов
+const roomInvite = ref<Room>();
+const toInvite = (selectRoom: Room): void => {
+    open.value = true;
+    roomInvite.value = selectRoom;
+};
 </script>
 
 <template>
     <div :class="$style.container">
+        <teleport to="body">
+            <ModalInviteUser
+                :open="open"
+                :invited-room="roomInvite"
+                @close="closeModal"
+            />
+        </teleport>
         <div :class="$style.column">
             <div :class="$style.head">
                 <SvgIcon name="chats" :class="$style.chatsIcon" />

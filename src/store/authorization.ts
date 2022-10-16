@@ -29,7 +29,7 @@ export const useAuthorizationStore = defineStore('authorization', () => {
     // загружается ли страница
     const isLoading = ref<boolean>(false);
     // все пользователи
-    const allUsers = ref<Array<any>>([]);
+    const allUsers = ref<Array<User>>([]);
 
     // ===== Это функции экшены =====
     // регистрация пользователя
@@ -88,6 +88,17 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         );
     })();
 
+    // получение всех пользователей в приложении
+    function getAllUsers() {
+        const url: string | undefined = urls?.allUsers;
+        axios
+            .get(url)
+            .then((res: AxiosResponse): void => {
+                allUsers.value = res.data.allUsers;
+            })
+            .catch((err) => console.log(err.response.data.message));
+    }
+
     // ===== Это геттеры =====
     const status = computed<boolean>(() => isLoggedIn.value);
     const username = computed<string>(() => user.value?.username || '');
@@ -108,6 +119,7 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         login,
         logout,
         authUser,
+        getAllUsers,
         username,
         isInvited,
     };

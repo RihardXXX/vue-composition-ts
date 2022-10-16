@@ -526,10 +526,10 @@ watch(
     button {
         max-width: 12rem;
         height: 4rem;
-        margin-left: .5rem;
+        margin-left: 0.5rem;
 
         &:last-child {
-            margin-left: .5rem;
+            margin-left: 0.5rem;
             margin-top: 1rem;
         }
     }
