@@ -20,7 +20,7 @@ const roomsStore = useRoomsStore();
 const { socket } = useSocketIO();
 const router = useRouter();
 
-const { isInvited, username, user } = toRefs(authorizationStore);
+const { isInvited, username, user, invitedRooms } = toRefs(authorizationStore);
 const { currentRoom } = toRefs(roomsStore);
 
 const open = ref<boolean>(false);
@@ -61,7 +61,6 @@ const exitLogin = (): void => authorizationStore.logout();
             </div>
         </VButton>
         <VButton
-            v-if="isInvited"
             name="мои приглашения"
             :class-container="$style.buttonInvite"
             @click="openModalInvites"

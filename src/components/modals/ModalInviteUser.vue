@@ -3,15 +3,22 @@ import ModalOverlayWrapper from '@/components/modals/ModalOverlayWrapper.vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 import PersonLogo from '@/components/PersonLogo.vue';
 import avatar1 from '@/assets/images/avatar1.png';
-import { onMounted, toRefs } from 'vue';
+import { onMounted, toRefs, inject } from 'vue';
 import { useAuthorizationStore } from '@/store/authorization';
 import { User } from '@/types/store/user';
 import { Room } from '@/types/store/room';
+import { urlAuth } from '@/api/urls/urlAuthorization';
+import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';
 
 // функция которая получает всех пользователей
 const { getAllUsers } = useAuthorizationStore();
 // все пользователи приложения
 const { allUsers } = toRefs(useAuthorizationStore());
+const axios = inject<any>('axios');
+
+// получаем пути
+// получение ссылок на юрл и либы аксиос для запросов
+const urls = inject<AuthorizationUrlTypes>(urlAuth);
 
 // получаем в хуке всех пользователей
 onMounted(() => {
@@ -31,17 +38,27 @@ const emit = defineEmits<{
 }>();
 
 // выслать приглашение пользователю в группу эту приватную выбранную
-const toInvite = (userSelect: User): void =>
-    console.log('to invite', userSelect);
+const toInvite = (userSelect: User): void => {
+    const url = urls?.addInvite;
+
+    axios
+        .post(url, {
+            data: {
+                invitedUser: userSelect,
+                invitedRoom: invitedRoom.value,
+            },
+        }) // после добавления или удаления приглашения обновляем состояние пользователей
+        .then(() => getAllUsers())
+        .catch((err) => console.log(err.response.data.message));
+};
 
 // проверить приглашен ли пользователь в эту приватную группу
 const isInvited = (selectUser: User): boolean => {
-    console.log('selectUser', selectUser);
-    console.log('invitedRoom.value', invitedRoom.value);
-    // return selectUser.invitedRooms.some(
-    //     (room) => room._id === invitedRoom.value._id
-    // );
-    return false;
+    // console.log('selectUser', selectUser);
+    // console.log('invitedRoom.value', invitedRoom.value);
+    return selectUser.invitedRooms.some(
+        (room) => room._id === invitedRoom.value._id
+    );
 };
 </script>
 
@@ -51,7 +68,13 @@ const isInvited = (selectUser: User): boolean => {
             <h3 :class="$style.title">Пригласить пользователей</h3>
             <div v-if="allUsers.length" :class="$style.usersContainer">
                 <div
-                    v-for="(user, i) in allUsers"
+                    v-for="(user, i) in [
+                        allUsers,
+                        allUsers,
+                        allUsers,
+                        allUsers,
+                        allUsers,
+                    ].flat()"
                     :key="i + 1"
                     :class="$style.userCard"
                 >
@@ -66,17 +89,14 @@ const isInvited = (selectUser: User): boolean => {
                     >
                         <SvgIcon
                             name="invite"
-                            :class="[
-                                $style.iconInvite,
-                                {
-                                    [$style._invited]: isInvited(user),
-                                },
-                            ]"
+                            :color="isInvited(user) ? '#111' : '#9e9e9e'"
+                            :class="$style.iconInvite"
                         />
                     </button>
                     <div v-if="isInvited(user)" :class="$style.infoInvite">
                         приглашён
                     </div>
+                    <div v-else :class="$style.infoInvite">не приглашён</div>
                 </div>
             </div>
             <button :class="$style.buttonClose" @click="emit('close')">
@@ -158,6 +178,7 @@ const isInvited = (selectUser: User): boolean => {
     flex-wrap: wrap;
     width: 100%;
     height: 80%;
+    margin-top: 1rem;
     //flex-direction: column;
 }
 
@@ -165,9 +186,15 @@ const isInvited = (selectUser: User): boolean => {
     display: flex;
     width: 25%;
     flex-direction: column;
+    margin-bottom: 2rem;
     //height: 4rem;
     //margin: 1rem;
     //border: 1px solid black;
+
+    @include respond-to(sm) {
+        width: 33%;
+        font-size: 1.2rem;
+    }
 }
 
 .settingSection {
@@ -267,7 +294,7 @@ const isInvited = (selectUser: User): boolean => {
     width: 100%;
     height: 2rem;
     fill: $gray-400;
-    //fill: red;
+
     &._invited {
         fill: $black-900;
     }

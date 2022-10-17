@@ -6,6 +6,7 @@ import { urlAuth } from '@/api/urls/urlAuthorization';
 import { AxiosResponse } from 'axios';
 import { useSocketIO } from '@/api/socketio/socket-io-client';
 import { socketEventsClient } from '@/types/socket/socketEvents';
+import { Room } from '@/types/store/room';
 
 export const useAuthorizationStore = defineStore('authorization', () => {
     // пути для запросов и аксиос
@@ -100,11 +101,18 @@ export const useAuthorizationStore = defineStore('authorization', () => {
     }
 
     // ===== Это геттеры =====
+    // статус авторизации
     const status = computed<boolean>(() => isLoggedIn.value);
+    // имя текущего пользователя
     const username = computed<string>(() => user.value?.username || '');
+    // имеются ли вообще комнаты в которых пригласили текущего пользователя
     const isInvited = computed<boolean>(() =>
         Boolean(user.value?.invitedRooms?.length)
     );
+    // комнаты сами в которые пригласили текущего пользователя
+    const invitedRooms = computed<Array<Room> | []>(() => {
+        return user.value?.invitedRooms || [];
+    });
 
     return {
         userList,
@@ -122,5 +130,6 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         getAllUsers,
         username,
         isInvited,
+        invitedRooms,
     };
 });

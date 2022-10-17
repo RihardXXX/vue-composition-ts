@@ -2,7 +2,7 @@
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 import { onMounted, ref, toRefs } from 'vue';
 import { useRoomsStore } from '@/store/rooms';
-import { useSocketIO } from '@/api/socketio/socket-io-client';
+// import { useSocketIO } from '@/api/socketio/socket-io-client';
 import { useAuthorizationStore } from '@/store/authorization';
 import { User } from '@/types/store/user';
 import { socketEventsServer } from '@/types/socket/socketEvents';
