@@ -68,13 +68,7 @@ const isInvited = (selectUser: User): boolean => {
             <h3 :class="$style.title">Пригласить пользователей</h3>
             <div v-if="allUsers.length" :class="$style.usersContainer">
                 <div
-                    v-for="(user, i) in [
-                        allUsers,
-                        allUsers,
-                        allUsers,
-                        allUsers,
-                        allUsers,
-                    ].flat()"
+                    v-for="(user, i) in allUsers"
                     :key="i + 1"
                     :class="$style.userCard"
                 >

@@ -3,6 +3,7 @@ import VButton from '@/components/ui/VButton.vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
 import PersonLogo from '@/components/PersonLogo.vue';
 import ModalRoomCreate from '@/components/modals/ModalRoomCreate.vue';
+import ModalInvitationList from '@/components/modals/ModalInvitationList.vue';
 import avatar1 from '@/assets/images/avatar1.png';
 import { useAuthorizationStore } from '@/store/authorization';
 import { ref } from 'vue';
@@ -20,14 +21,14 @@ const roomsStore = useRoomsStore();
 const { socket } = useSocketIO();
 const router = useRouter();
 
-const { isInvited, username, user, invitedRooms } = toRefs(authorizationStore);
+const { username, user } = toRefs(authorizationStore);
 const { currentRoom } = toRefs(roomsStore);
 
 const open = ref<boolean>(false);
 
 const createRoom = (): boolean => (open.value = true);
 const closeModal = (): boolean => (open.value = false);
-const openModalInvites = (): void => console.log('openModalInvites');
+
 const selectRooms = (): void => {
     // выходим из текущей комнаты
     // когда пользователь выходит сообщаем остальным что пользователь вышел
@@ -46,6 +47,11 @@ const selectRooms = (): void => {
     });
 };
 const exitLogin = (): void => authorizationStore.logout();
+
+// открытие окна приглашений для просмотра моих приглашений
+const openModalInvited = ref<boolean>(false);
+const openModalInvites = (): boolean => (openModalInvited.value = true);
+const closeModalInvites = (): boolean => (openModalInvited.value = false);
 </script>
 
 <template>
@@ -77,6 +83,12 @@ const exitLogin = (): void => authorizationStore.logout();
         </div>
         <teleport to="body">
             <ModalRoomCreate :open="open" @close="closeModal" />
+        </teleport>
+        <teleport to="body">
+            <ModalInvitationList
+                :open="openModalInvited"
+                @close="closeModalInvites"
+            />
         </teleport>
     </header>
 </template>
@@ -245,70 +257,3 @@ const exitLogin = (): void => authorizationStore.logout();
     transform: translate(-50%, -50%);
 }
 </style>
-
-<!--<script>-->
-<!--    import { mapState, mapActions } from 'vuex';-->
-<!--    import VButton from '~/components/ui/button/VButton';-->
-<!--    import ModalRoomCreate from '~/components/main/ModalRoomCreate';-->
-<!--    import PersonLogo from '~/components/common/PersonLogo';-->
-<!--    import ModalListInvitedRooms from '~/components/main/ModalListInvitedRooms';-->
-
-<!--    export default {-->
-<!--        name: 'TheHeader',-->
-
-<!--        components: {-->
-<!--            VButton,-->
-<!--            PersonLogo,-->
-<!--        },-->
-
-<!--        computed: {-->
-<!--            ...mapState('authorization', [-->
-<!--                'user',-->
-<!--            ]),-->
-
-<!--            ...mapState([-->
-<!--                'currentRoom',-->
-<!--            ]),-->
-
-<!--            username() {-->
-<!--                return this.user.username;-->
-<!--            },-->
-
-<!--            // есть ли приглашения-->
-<!--            isInvited() {-->
-<!--                return this.user.invitedRooms.length;-->
-<!--            },-->
-<!--        },-->
-
-<!--        methods: {-->
-<!--            ...mapActions('authorization', [-->
-<!--                'logout',-->
-<!--            ]),-->
-
-<!--            // разлогинится-->
-<!--            exitLogin() {-->
-<!--                this.logout();-->
-<!--            },-->
-
-<!--            // выбрать комнату-->
-<!--            selectRooms() {-->
-<!--                // выходим из текущей комнаты-->
-<!--                // когда пользователь выходит сообщаем остальным что пользователь вышел-->
-<!--                this.$socket.emit('exitRoom', { user: this.user, room: this.currentRoom });-->
-<!--                this.$router.push('/');-->
-<!--            },-->
-
-<!--            // открываем модалку для создания комнаты-->
-<!--            openModal() {-->
-<!--                console.log('open');-->
-<!--                this.$modal.open(ModalRoomCreate);-->
-<!--            },-->
-
-<!--            // открыть модалку с приглашениями-->
-<!--            openModalInvites() {-->
-<!--                console.log('openModalInvites');-->
-<!--                this.$modal.open(ModalListInvitedRooms);-->
-<!--            },-->
-<!--        },-->
-<!--    };-->
-<!--</script>-->

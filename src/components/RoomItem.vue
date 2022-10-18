@@ -5,7 +5,7 @@ import { plural } from '@/utils';
 
 interface Props {
     name: string;
-    countUser?: number;
+    countUser?: number | string;
     isMyRoom?: boolean;
     disabled?: boolean;
     isPrivate?: boolean;
