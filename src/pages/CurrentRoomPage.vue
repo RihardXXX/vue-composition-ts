@@ -10,7 +10,7 @@ import { Room } from '@/types/store/room';
 import { User } from '@/types/store/user';
 import { socketEventsServer } from '@/types/socket/socketEvents';
 // хуки и функции вью
-import { onMounted, toRefs, ref, onUnmounted, watch } from 'vue';
+import { onMounted, toRefs, ref, onUnmounted, watch, computed } from 'vue';
 // глобальное состояние Пиниа
 import { useAuthorizationStore } from '@/store/authorization';
 import { useRoomsStore } from '@/store/rooms';
@@ -162,6 +162,22 @@ watch(
         }
     }
 );
+
+// показывать комнаты если я владелец или они публичные или я приглашен в приватную
+const filteredRooms = computed<Array<Room>>(() => {
+    return rooms.value.filter((roomItem: Room): boolean => {
+        // комната не приватная
+        const notPrivate = !roomItem.private;
+        // пользователь является автором комнаты
+        const isAuthor = roomItem.author === user.value?._id;
+        // Эта комната имеется в списке приглашенных комнат
+        const isRooms =
+            user.value?.invitedRooms.some(
+                (roomInv: Room): boolean => roomInv._id === roomItem._id
+            ) || false;
+        return notPrivate || isAuthor || isRooms;
+    });
+});
 </script>
 
 <template>
@@ -189,7 +205,7 @@ watch(
                 <MqResponsive target="md+" :class="$style.chatRooms">
                     <h3 :class="$style.titleRoom">Комнаты:</h3>
                     <UserOrRoomItem
-                        v-for="room in rooms"
+                        v-for="room in filteredRooms"
                         :key="room._id"
                         :active="currentRoom._id === room._id"
                         :label="room.name"

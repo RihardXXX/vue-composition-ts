@@ -5,4 +5,5 @@ export interface AuthorizationUrlTypes {
     auth: string;
     allUsers: string;
     addInvite: string;
+    deleteInvite: string;
 }

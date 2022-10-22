@@ -50,7 +50,13 @@ const exitLogin = (): void => authorizationStore.logout();
 
 // открытие окна приглашений для просмотра моих приглашений
 const openModalInvited = ref<boolean>(false);
-const openModalInvites = (): boolean => (openModalInvited.value = true);
+const openModalInvites = (): void => {
+    // обновляем состояние текущего пользователя перед открытием окна
+    authorizationStore.authUser();
+    // обновляем пользователей и узнаем приглашали ли мы его
+    authorizationStore.getAllUsers();
+    openModalInvited.value = true;
+};
 const closeModalInvites = (): boolean => (openModalInvited.value = false);
 </script>
 

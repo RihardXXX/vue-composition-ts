@@ -100,6 +100,11 @@ export const useAuthorizationStore = defineStore('authorization', () => {
             .catch((err) => console.log(err.response.data.message));
     }
 
+    // установка текущего пользователя
+    function setCurrentUser(currentUser: User) {
+        user.value = currentUser;
+    }
+
     // ===== Это геттеры =====
     // статус авторизации
     const status = computed<boolean>(() => isLoggedIn.value);
@@ -128,6 +133,7 @@ export const useAuthorizationStore = defineStore('authorization', () => {
         logout,
         authUser,
         getAllUsers,
+        setCurrentUser,
         username,
         isInvited,
         invitedRooms,

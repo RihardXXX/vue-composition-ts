@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import SvgIcon from '@/components/ui/SvgIcon.vue';
-import { onMounted, ref, toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs } from 'vue';
 import { useRoomsStore } from '@/store/rooms';
 // import { useSocketIO } from '@/api/socketio/socket-io-client';
 import { useAuthorizationStore } from '@/store/authorization';
@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router';
 const { rooms, myRooms } = toRefs(useRoomsStore());
 const { setCurrentRoom } = useRoomsStore();
 // получаем данные о текущем пользователе
-const { user: currentUser } = useAuthorizationStore();
+const { user: currentUser, getAllUsers, authUser } = useAuthorizationStore();
 // объект сокета для получения данных от сервера
 const { socket } = useRoomsStore();
 // роутер объект для перехода
@@ -44,9 +44,19 @@ const closeModal = (): boolean => (open.value = false);
 // комната приглашения для модалки пропсов
 const roomInvite = ref<Room>();
 const toInvite = (selectRoom: Room): void => {
+    // обновляем свое состояние и состояние всех пользователей перед открытием модалки
+    authUser();
+    getAllUsers();
     open.value = true;
     roomInvite.value = selectRoom;
 };
+
+// показывать комнаты если я владелец или они публичные
+const filteredRooms = computed<Array<Room>>(() => {
+    return rooms.value.filter((roomItem: Room): boolean => {
+        return !roomItem.private || roomItem.author === currentUser?._id;
+    });
+});
 </script>
 
 <template>
@@ -65,7 +75,7 @@ const toInvite = (selectRoom: Room): void => {
             <h4>все комнаты</h4>
             <ul v-if="rooms.length" :class="$style.roomsList">
                 <RoomItem
-                    v-for="room in rooms"
+                    v-for="room in filteredRooms"
                     :key="room._id"
                     :name="room.name"
                     :is-my-room="room.author === currentUser._id"

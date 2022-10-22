@@ -2,12 +2,20 @@
 import ModalOverlayWrapper from '@/components/modals/ModalOverlayWrapper.vue';
 import RoomItem from '@/components/RoomItem.vue';
 import SvgIcon from '@/components/ui/SvgIcon.vue';
-import { onMounted, toRefs } from 'vue';
+import { inject, onMounted, toRefs } from 'vue';
 import { useAuthorizationStore } from '@/store/authorization';
 import { Room } from '@/types/store/room';
+import { useRoomsStore } from '@/store/rooms';
+import { useRouter } from 'vue-router';
+import { AuthorizationUrlTypes } from '@/types/urls/authorizationUrlTypes';
+import { urlAuth } from '@/api/urls/urlAuthorization';
+import { User } from '@/types/store/user';
+import { AxiosResponse } from 'axios';
 
 onMounted(() => {
     console.log('onMounted ');
+    // обновляем состояние пользователя при открытии окна
+    authorizationStore.authUser();
 });
 
 const emit = defineEmits<{
@@ -16,10 +24,45 @@ const emit = defineEmits<{
 
 // подключаемся к сторе и получаем состояние авторизации
 const authorizationStore = useAuthorizationStore();
-const { invitedRooms } = toRefs(authorizationStore);
+const { invitedRooms, user } = toRefs(authorizationStore);
+// функция для установки текущей комнаты
+const { setCurrentRoom } = useRoomsStore();
+// роутер объект для перехода
+const router = useRouter();
+// объект запросов
+const axios = inject<any>('axios');
+// получаем пути
+// получение ссылок на юрл и либы аксиос для запросов
+const urls = inject<AuthorizationUrlTypes>(urlAuth);
 
 // принять приглашение в комнату и перейти в неё
-const toComeIn = (room: Room): void => console.log('toComeIn', room);
+const toComeIn = (room: Room): void => {
+    setCurrentRoom(room);
+    router.push({ name: 'current-room' });
+    emit('close');
+};
+
+// удалить приглашение
+const deleteInvite = (room: Room): void => {
+    console.log('delete invite', room);
+    console.log('user', user.value);
+    console.log('delete invite', urls?.deleteInvite);
+    const url = urls?.deleteInvite;
+    axios
+        .post(url, {
+            data: {
+                currentUser: user.value,
+                invitedRoom: room,
+            } as {
+                currentUser: User;
+                invitedRoom: Room;
+            },
+        }) // после удаления приглашения обновляем состояние
+        .then((res: AxiosResponse): void =>
+            authorizationStore.setCurrentUser(res.data.user)
+        )
+        .catch((err) => console.log(err.response.data.message));
+};
 </script>
 
 <template>
@@ -32,7 +75,9 @@ const toComeIn = (room: Room): void => console.log('toComeIn', room);
                     :key="room._id"
                     :name="`приглашение в комнату ${room.name}`"
                     :count-user="room.users.length"
+                    :is-my-room="true"
                     @click="() => toComeIn(room)"
+                    @delete-room="() => deleteInvite(room)"
                 />
             </ul>
             <div v-else>
@@ -98,7 +143,7 @@ const toComeIn = (room: Room): void => console.log('toComeIn', room);
     overflow: auto;
     width: 100%;
     height: 88%;
-    margin: 1rem 0;
+    margin: 1rem 0 4rem 0;
     list-style: none;
 }
 
