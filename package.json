@@ -15,7 +15,7 @@
         "all:fix": "npm run format && npm run style:fix"
     },
     "dependencies": {
-        "axios": "^0.27.2",
+        "axios": "^0.31.0",
         "normalize.css": "^8.0.1",
         "pinia": "^2.0.22",
         "postcss": "^8.1.0",
